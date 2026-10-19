@@ -28,7 +28,7 @@ public class Main extends ApplicationAdapter {
         spriteImage = new Texture("person.png");
 
         userSprite = new Sprite(spriteImage);
-        userSprite.setSize(1.5f, 2.0f);
+        userSprite.setSize(5f, 2.0f);
         userSprite.setPosition(0, 0);
 
         viewport = new FitViewport(8, 5);

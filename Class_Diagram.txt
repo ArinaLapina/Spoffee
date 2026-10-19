@@ -1,0 +1,39 @@
+@startuml
+Player "1" *-- "many" Item : contains
+Player "1" *-- "1" Inventory: contains
+Main o-- Timer
+
+Class Geese{
+   GeeseLeft: Integer
+   disperse() 
+}
+
+Class Player{
+   Position: List
+   Energy: Integer
+  }
+
+Class Item{
+   Activated: Boolean
+   geeseDispersed: Integer
+   linkedEvent: String
+}
+
+Class Main{
+   isEvent()
+}
+
+Class Inventory{
+   Counter: Integer
+}
+
+Class Timer{
+    Current Time: Date/Time
+    updateTime()
+}
+
+Class Events{
+    Activated: Boolean
+    activateEvent()
+}
+@enduml

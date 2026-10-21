@@ -21,6 +21,9 @@ public class Timer {
     private long getTimeMilliseconds(){
         if (isTimerPaused){
             return (duration - (timeOfPause - startOfTimer));
+        //Limits timer to non-negetive values.
+        } else if (duration < (System.currentTimeMillis() - startOfTimer)){
+            return(0);
         } else {
             return (duration - (System.currentTimeMillis() - startOfTimer));
         }
@@ -39,13 +42,11 @@ public class Timer {
      * @return Number of minutes and seconds left on the timer, seperated with a colon.
      */
     public String getTime(){
-        long seconds = (getTimeSeconds() % 60);
-        return (getTimeMinutes() + ":" + seconds);
+        return String.format("%d:%02d", getTimeMinutes(), getTimeSeconds() % 60);
     } 
 
     public String toString(){
-        long seconds = (getTimeSeconds() % 60);
-        return (getTimeMinutes() + ":" + seconds);
+        return getTime();
     } 
 
     /**

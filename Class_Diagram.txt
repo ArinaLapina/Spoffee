@@ -1,5 +1,5 @@
 @startuml
-Player "1" *-- "many" Item : contains
+Inventory "1" *-- "many" Item : contains
 Player "1" *-- "1" Inventory: contains
 Main o-- Timer
 
@@ -11,6 +11,7 @@ Class Geese{
 Class Player{
    Position: List
    Energy: Integer
+   Score: Integer
   }
 
 Class Item{

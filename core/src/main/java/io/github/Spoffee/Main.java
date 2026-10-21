@@ -66,15 +66,15 @@ public class Main extends ApplicationAdapter {
             userSprite.translateX(speed * delta);
         } 
         
-        else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             userSprite.translateX(-speed * delta);
         }
 
-        else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             userSprite.translateY(speed * delta);
         }
 
-        else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             userSprite.translateY(-speed * delta);
         }
     }

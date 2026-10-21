@@ -14,7 +14,27 @@ public class Item {
         linkedEvent = eventLinked;
     }
 
-    public void useItem(){
+    private void useItem(){
         //Code that triggers the item to be used
+    }
+
+    public Texture getTexture(){
+        return itemTexture;
+    }
+
+    public boolean  getItemActivationStatus(){
+        return itemUsed;
+    }
+
+    public void setItemActivationStatus(boolean varToSet){
+        itemUsed = varToSet;
+    }
+
+    public int getGeeseDispered(){
+        return geeseDispered;
+    }
+
+    public Event getLinkedEvent(){
+        return linkedEvent;
     }
 }

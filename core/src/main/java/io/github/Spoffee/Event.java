@@ -2,10 +2,10 @@ package io.github.Spoffee;
 
 public class Event {
     private boolean eventActivated = false;
-    private int xPos;
-    private int yPos;
-    private int width;
-    private int height;
+    private float xPos;
+    private float yPos;
+    private float width;
+    private float height;
 
     public Event(int x, int y, int widthOfEvent, int heightOfEvent){
         xPos = x;
@@ -16,5 +16,25 @@ public class Event {
 
     private void triggerEvent(){
         //Code that causes something to happen from the event
+    }
+
+    public boolean getEventActivationStatus(){
+        return eventActivated;
+    }
+
+    public float getXpos(){
+        return xPos;
+    }
+
+    public float getYpos(){
+        return yPos;
+    }
+
+    public float getWidth(){
+        return width;
+    }
+
+    public float getHeight(){
+        return height;
     }
 }

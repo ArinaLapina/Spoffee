@@ -8,15 +8,23 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class GameScreen implements Screen{
     private final GooseGame parent;
     private SpriteBatch batch;
+    private Item item1;
+    private Event event1;
+    private Rectangle event1Rectangle;
     private Texture backgroundImage;
     private Player userSprite;
     private FitViewport viewport;
+    private Stage stage;
+    private float boostTimer = 0f;
 
     public GameScreen(GooseGame parentClass){
         parent = parentClass;
@@ -35,9 +43,17 @@ public class GameScreen implements Screen{
         DisplayMode displayMode = Gdx.graphics.getDisplayMode();
         Gdx.graphics.setWindowedMode(displayMode.width, displayMode.height);
 
-        //Initialise 2 items and add to Player inventory
-        //Initialise 2 hidden events, and create rectangles
+        stage = new Stage(new ScreenViewport());
+        Gdx.input.setInputProcessor(stage);
 
+
+        //Initialise 2 items and add to Player inventory
+        item1 = new Item("energydrink.png", 0, null);
+
+        //Initialise 2 hidden events, and create rectangles
+        event1 = new Event(2, 4, 5, 5);
+        event1Rectangle = new Rectangle();
+        event1Rectangle.set(event1.getXpos(), event1.getYpos(), event1.getWidth(), event1.getHeight());
     }
 
     @Override
@@ -49,34 +65,53 @@ public class GameScreen implements Screen{
 
     private void input(){
         //This is so that the player can move, with the arrow buttons
-        float speed = 1f;
+        float speed = userSprite.getSpeed();
         float delta = Gdx.graphics.getDeltaTime();
 
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
-            userSprite.playerSprite.translateX(speed * delta);
+            userSprite.getPSprite().translateX(speed * delta);
         } 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
-            userSprite.playerSprite.translateX(-speed * delta);
+            userSprite.getPSprite().translateX(-speed * delta);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
-            userSprite.playerSprite.translateY(speed * delta);
+            userSprite.getPSprite().translateY(speed * delta);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
-            userSprite.playerSprite.translateY(-speed * delta);
+            userSprite.getPSprite().translateY(-speed * delta);
         }
 
         //Add triggers for when items are used
+        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)){
+            item1.setItemActivationStatus(true);
+            userSprite.setSpeed(1.25f);
+            boostTimer = 10f;
+        }
+
+        //Add code to display pause / resume game
+
     }
 
     private void logic(){
+        //Decreases the timer for item that increases speed for set time
+        
+        if (boostTimer > 0f) {
+            boostTimer -= Gdx.graphics.getDeltaTime();
+
+            if (boostTimer <= 0f) {
+                boostTimer = 0f;
+                userSprite.setSpeed(1f);
+            }
+        }
+
         //Code that stops the player going out of bounds
         float worldWidth = viewport.getWorldWidth();
         float worldHeight = viewport.getWorldHeight();
-        float spriteWidth = userSprite.playerSprite.getWidth();
-        float spriteHeight = userSprite.playerSprite.getHeight();
+        float spriteWidth = userSprite.getPSprite().getWidth();
+        float spriteHeight = userSprite.getPSprite().getHeight();
 
-        userSprite.playerSprite.setX(MathUtils.clamp(userSprite.playerSprite.getX(), 0, worldWidth - spriteWidth));
-        userSprite.playerSprite.setY(MathUtils.clamp(userSprite.playerSprite.getY(), 0, worldHeight - spriteHeight));
+        userSprite.getPSprite().setX(MathUtils.clamp(userSprite.getPSprite().getX(), 0, worldWidth - spriteWidth));
+        userSprite.getPSprite().setY(MathUtils.clamp(userSprite.getPSprite().getY(), 0, worldHeight - spriteHeight));
 
         //Add triggers for overlaps with event areas
 
@@ -95,7 +130,13 @@ public class GameScreen implements Screen{
         batch.begin();
 
         batch.draw(backgroundImage, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
-        userSprite.playerSprite.draw(batch);
+
+        userSprite.getPSprite().draw(batch);
+
+        //Displays the items that the player has in their inventory, if they can still be used
+        if (item1.getItemActivationStatus() == false){
+            batch.draw(item1.getTexture(), 0f, 4.5f, 0.5f, 0.5f);
+        }
 
         //Add code to display geese
 

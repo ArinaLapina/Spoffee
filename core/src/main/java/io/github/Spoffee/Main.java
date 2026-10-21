@@ -2,6 +2,7 @@ package io.github.Spoffee;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -28,10 +29,13 @@ public class Main extends ApplicationAdapter {
         spriteImage = new Texture("person.png");
 
         userSprite = new Sprite(spriteImage);
-        userSprite.setSize(5f, 2.0f);
+        userSprite.setSize(0.75f, 1f);
         userSprite.setPosition(0, 0);
 
         viewport = new FitViewport(8, 5);
+
+        DisplayMode displayMode = Gdx.graphics.getDisplayMode();
+        Gdx.graphics.setWindowedMode(displayMode.width, displayMode.height);
 
     }
 
@@ -55,7 +59,7 @@ public class Main extends ApplicationAdapter {
     }
 
     public void input(){
-        float speed = 3.75f;
+        float speed = 1f;
         float delta = Gdx.graphics.getDeltaTime();
 
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
@@ -73,8 +77,6 @@ public class Main extends ApplicationAdapter {
         else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             userSprite.translateY(-speed * delta);
         }
-
-
     }
 
     public void logic(){

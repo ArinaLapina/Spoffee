@@ -1,9 +1,4 @@
-<<<<<<< HEAD
 # Spoffee
-=======
-# SPOFFE
-# GooseGame
->>>>>>> 2ec0c58c6b43f8a6da2d27e28bd3e47d772ee006
 
 A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
 

@@ -62,19 +62,17 @@ public class Main extends ApplicationAdapter {
         float speed = 1f;
         float delta = Gdx.graphics.getDeltaTime();
 
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+        // Movement input
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
             userSprite.translateX(speed * delta);
         } 
-        
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
             userSprite.translateX(-speed * delta);
         }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
             userSprite.translateY(speed * delta);
         }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
             userSprite.translateY(-speed * delta);
         }
     }

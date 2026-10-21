@@ -7,7 +7,7 @@ participant Item as Foo3
 participant Main as Foo4 
 participant Geese as Foo5
 
-= Collecting an item = 
+== Collecting an item == 
 Foo --> Foo1 : 1) Moves Player towards an item
 Foo1 --> Foo2 : 2) pickUpItem()
 Foo2 --> Foo3 : 3) getItem()
@@ -15,7 +15,7 @@ Foo3 --> Foo2 : 4) Item Picked Up
 Foo2 --> Foo1 : 5) Updated Inventory
 Foo1 --> Foo : 6) New Inventory Displayed
 
-= Using an item = 
+== Using an item ==
 Foo --> Foo1 : 7) User selects to use selected item
 Foo1 --> Foo2 : 8) getCurrentItem(inventoryPosition)
 Foo2 --> Foo3 : 9) getItemStats(Item)
@@ -24,10 +24,10 @@ Foo2 --> Foo1 : 11) Current item and info
 Foo1 --> Foo4 : 12) useItem()
 
 alt Item disperses geese
-  Foo4 --> Foo5 : 13) DecrementGeese()
-  Foo5 --> Foo4 : 14) Geese Left
+    Foo4 --> Foo5 : 13) DecrementGeese()
+    Foo5 --> Foo4 : 14) Geese Left
 else Item has another effect
-  Foo4 --> Foo3 : 13) applyEffect()
+    Foo4 --> Foo3 : 13) applyEffect()
 end
 
 Foo4 --> Foo2 : 15) RemoveItem()

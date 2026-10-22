@@ -32,14 +32,28 @@ public class GooseGame extends Game {
                 break;
             
             case WINGAME :
-                winScreen = new WinScreen(this);
+                winScreen = new WinScreen(this, 0, 0);
                 this.setScreen(winScreen);
                 break;
 
             case LOSSGAME :
-                lossScreen = new LossScreen(this);
+                lossScreen = new LossScreen(this, 0, 0);
                 this.setScreen(lossScreen);
                 break;
+        }
+    }
+
+    public void changeScreen(int screen, Player player) {
+        if (screen == WINGAME) {
+            winScreen = new WinScreen(this, player.getItemUsedCounter(),
+                    player.getEventActiveCounter());
+            this.setScreen(winScreen);
+        } else if (screen == LOSSGAME) {
+            lossScreen = new LossScreen(this, player.getItemUsedCounter(),
+                    player.getEventActiveCounter());
+            this.setScreen(lossScreen);
+        } else {
+            changeScreen(screen);
         }
     }
 }

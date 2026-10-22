@@ -14,9 +14,13 @@ public class WinScreen implements Screen{
     private FitViewport viewport;
     private BitmapFont font;
     private SpriteBatch batch;
+    private final int itemsUsed;
+    private final int eventsActivated;
 
-    public WinScreen(GooseGame parentClass){
+    public WinScreen(GooseGame parentClass, int itemsUsed, int eventsActivated){
         parent = parentClass;
+        this.itemsUsed = itemsUsed;
+        this.eventsActivated = eventsActivated;
     }
 
     @Override 
@@ -42,8 +46,8 @@ public class WinScreen implements Screen{
         batch.begin();
         
         font.draw(batch, "You won the game!!!", 3.3f, 3.2f);
-        font.draw(batch, "Items Used: " , 3.3f, 2.7f);
-        font.draw(batch, "Events Activated: " , 3.3f, 2.2f);
+        font.draw(batch, "Items Used: " + itemsUsed, 3.3f, 2.7f);
+        font.draw(batch, "Events Activated: " + eventsActivated, 3.3f, 2.2f);
         font.draw(batch, "Time Taken: : " , 3.3f, 1.7f);
         font.draw(batch, "Tap anywhere to restart the game: " , 3.3f, 1.2f);
         batch.end();

@@ -18,12 +18,12 @@ public class GameScreen implements Screen{
     private SpriteBatch batch;
     private Item item1;
     private Event event1;
+    private Event event2;
     private Texture backgroundImage;
     private Player userSprite;
     private FitViewport viewport;
     private Stage stage;
     private float boostTimer = 0f;
-    private Timer gameTimer = new Timer(10);
 
     public GameScreen(GooseGame parentClass){
         parent = parentClass;
@@ -51,6 +51,7 @@ public class GameScreen implements Screen{
 
         //Initialise 2 hidden events, and create rectangles
         event1 = new Event(1, 1, 5, 5);
+        event2 = new Event(1, 1, 5, 5);
 
     }
 
@@ -91,6 +92,10 @@ public class GameScreen implements Screen{
             boostTimer = 10f;
         }
 
+        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)){
+            //Code for activation event2
+        }
+
         //Add code to display pause / resume game
 
     }
@@ -121,12 +126,14 @@ public class GameScreen implements Screen{
             //Action for event 1
         }
 
-        if ("0".equals(gameTimer.toString())){
-            parent.changeScreen(GooseGame.LOSSGAME);
-            System.out.print("Game End");
+        if (userSprite.getPlayerRectangle().overlaps(event2.getRectangle())){
+            userSprite.increaseEventActiveCounter();
+            //Action for event 2
         }
+
         //Add a trigger for overlap with end goal area and when triggered: 
-                // parent.changeScreen(GooseGame.ENDGAME);
+                // IF WIN: parent.changeScreen(GooseGame.WINGAME, userSprite);
+                // IF LOSS: parent.changeScreen(GooseGame.LOSSGAME, userSprite);
 
     }
 

@@ -15,7 +15,7 @@ public class GooseGame extends Game {
 
     @Override
     public void create(){
-        changeScreen(GooseGame.APPLICATION);
+        changeScreen(GooseGame.MENU);
     }
 
     public void changeScreen(int screen){

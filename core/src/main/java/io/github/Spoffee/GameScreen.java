@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -19,12 +18,12 @@ public class GameScreen implements Screen{
     private SpriteBatch batch;
     private Item item1;
     private Event event1;
-    private Rectangle event1Rectangle;
     private Texture backgroundImage;
     private Player userSprite;
     private FitViewport viewport;
     private Stage stage;
     private float boostTimer = 0f;
+    private Timer gameTimer = new Timer(10);
 
     public GameScreen(GooseGame parentClass){
         parent = parentClass;
@@ -51,9 +50,8 @@ public class GameScreen implements Screen{
         item1 = new Item("energydrink.png", 0, null);
 
         //Initialise 2 hidden events, and create rectangles
-        event1 = new Event(2, 4, 5, 5);
-        event1Rectangle = new Rectangle();
-        event1Rectangle.set(event1.getXpos(), event1.getYpos(), event1.getWidth(), event1.getHeight());
+        event1 = new Event(1, 1, 5, 5);
+
     }
 
     @Override
@@ -64,26 +62,31 @@ public class GameScreen implements Screen{
     }
 
     private void input(){
-        //This is so that the player can move, with the arrow buttons
+        //Triggers the player movement when the appropriate keys have been pressed
         float speed = userSprite.getSpeed();
         float delta = Gdx.graphics.getDeltaTime();
 
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
             userSprite.getPSprite().translateX(speed * delta);
+            userSprite.setRectangle();
         } 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
             userSprite.getPSprite().translateX(-speed * delta);
+            userSprite.setRectangle();
         }
         if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
             userSprite.getPSprite().translateY(speed * delta);
+            userSprite.setRectangle();
         }
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
             userSprite.getPSprite().translateY(-speed * delta);
+            userSprite.setRectangle();
         }
 
-        //Add triggers for when items are used
+        //Checks if the key to trigger item 1 has been activated
         if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)){
             item1.setItemActivationStatus(true);
+            userSprite.increaseItemUsedCounter();
             userSprite.setSpeed(1.25f);
             boostTimer = 10f;
         }
@@ -93,8 +96,7 @@ public class GameScreen implements Screen{
     }
 
     private void logic(){
-        //Decreases the timer for item that increases speed for set time
-        
+        //Checks if the timer for item 1 has expired and if so changes the speed back to normal
         if (boostTimer > 0f) {
             boostTimer -= Gdx.graphics.getDeltaTime();
 
@@ -104,7 +106,7 @@ public class GameScreen implements Screen{
             }
         }
 
-        //Code that stops the player going out of bounds
+        //Checks if the user stops the player going out of bounds
         float worldWidth = viewport.getWorldWidth();
         float worldHeight = viewport.getWorldHeight();
         float spriteWidth = userSprite.getPSprite().getWidth();
@@ -113,8 +115,16 @@ public class GameScreen implements Screen{
         userSprite.getPSprite().setX(MathUtils.clamp(userSprite.getPSprite().getX(), 0, worldWidth - spriteWidth));
         userSprite.getPSprite().setY(MathUtils.clamp(userSprite.getPSprite().getY(), 0, worldHeight - spriteHeight));
 
-        //Add triggers for overlaps with event areas
+        //Checks if the user is in an area that triggers a hidden event to occur
+        if (userSprite.getPlayerRectangle().overlaps(event1.getRectangle())){
+            userSprite.increaseEventActiveCounter();
+            //Action for event 1
+        }
 
+        if ("0".equals(gameTimer.toString())){
+            parent.changeScreen(GooseGame.LOSSGAME);
+            System.out.print("Game End");
+        }
         //Add a trigger for overlap with end goal area and when triggered: 
                 // parent.changeScreen(GooseGame.ENDGAME);
 
@@ -133,11 +143,14 @@ public class GameScreen implements Screen{
 
         userSprite.getPSprite().draw(batch);
 
+        
+
         //Displays the items that the player has in their inventory, if they can still be used
         if (item1.getItemActivationStatus() == false){
             batch.draw(item1.getTexture(), 0f, 4.5f, 0.5f, 0.5f);
         }
 
+        
         //Add code to display geese
 
         batch.end();

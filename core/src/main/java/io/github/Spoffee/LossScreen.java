@@ -23,6 +23,9 @@ public class LossScreen implements Screen{
         this.eventsActivated = eventsActivated;
     }
 
+    /** Intialises the window and text for endgame in a loss of the game
+     * @param delta
+     */
     @Override 
     public void show(){
         // Set up the menu and switch screens when the player chooses to start.
@@ -37,6 +40,9 @@ public class LossScreen implements Screen{
 
     }
 
+    /** Renders the text and counters onto the screen, and has a trigger for a game restart
+     * @param delta
+     */
     @Override
     public void render(float delta) {
         ScreenUtils.clear(Color.BLACK);

@@ -14,26 +14,43 @@ public class Item {
         linkedEvent = eventLinked;
     }
 
+    /** Causes the action based off the item to trigger
+     * @param delta
+     */
     private void useItem(){
-        //Code that triggers the item to be used
     }
 
+    /** 
+     * @return Texture
+     */
     public Texture getTexture(){
         return itemTexture;
     }
 
+    /** 
+     * @return boolean
+     */
     public boolean  getItemActivationStatus(){
         return itemUsed;
     }
 
+    /** 
+     * @param varToSet
+     */
     public void setItemActivationStatus(boolean varToSet){
         itemUsed = varToSet;
     }
 
+    /** 
+     * @return int
+     */
     public int getGeeseDispered(){
         return geeseDispered;
     }
 
+    /** 
+     * @return Event
+     */
     public Event getLinkedEvent(){
         return linkedEvent;
     }

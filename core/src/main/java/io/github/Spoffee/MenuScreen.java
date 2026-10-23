@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -12,27 +12,31 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 public class MenuScreen implements Screen{
     private final GooseGame parent;
     private FitViewport viewport;
-    private BitmapFont font;
+    private Texture backgroundImage;
     private SpriteBatch batch;
 
     public MenuScreen(GooseGame parentClass){
         parent = parentClass;
     }
 
+    /** Initialises the screen window, and the background image ready to display
+     * @param delta
+     */
     @Override 
     public void show(){
-        // Set up the menu and switch screens when the player chooses to start.
         viewport = new FitViewport(8, 5);
         DisplayMode displayMode = Gdx.graphics.getDisplayMode();
         Gdx.graphics.setWindowedMode(displayMode.width, displayMode.height);
 
         batch = new SpriteBatch();
-        font = new BitmapFont();
-        font.setUseIntegerPositions(false);
-        font.getData().setScale((viewport.getWorldHeight() / Gdx.graphics.getHeight())*1.5f);
+        
+        backgroundImage = new Texture("MenuScreenBackground.png");
 
     }
 
+    /** Renders the image of the screen, and checks if the trigger for the game start has been activated
+     * @param delta
+     */
     @Override
     public void render(float delta) {
         ScreenUtils.clear(Color.BLACK);
@@ -41,8 +45,8 @@ public class MenuScreen implements Screen{
         batch.setProjectionMatrix(viewport.getCamera().combined);
         batch.begin();
         
-        font.draw(batch, "Welcome to The Goose Game!!!", 3.3f, 3.2f);
-        font.draw(batch, "Tap anywhere to begin!", 3.5f, 2.7f);
+        batch.draw(backgroundImage, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+
         batch.end();
 
 		if (Gdx.input.isTouched()) {
@@ -65,6 +69,14 @@ public class MenuScreen implements Screen{
         //Place a button that when clicked starts the game
     }
 
+    /** 
+     * @param width
+     * @param height
+     */
+    /** 
+     * @param width
+     * @param height
+     */
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);
@@ -85,6 +97,5 @@ public class MenuScreen implements Screen{
     @Override
     public void dispose() {
         batch.dispose();
-        font.dispose();
     }
 }

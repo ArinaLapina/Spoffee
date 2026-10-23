@@ -1,5 +1,7 @@
 package io.github.Spoffee;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.Input;
@@ -8,10 +10,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class GameScreen implements Screen{
     private final GooseGame parent;
@@ -22,13 +22,17 @@ public class GameScreen implements Screen{
     private Texture backgroundImage;
     private Player userSprite;
     private FitViewport viewport;
-    private Stage stage;
+    private ArrayList<Goose> activeGeese;
+    private Goose newGoose;
     private float boostTimer = 0f;
 
     public GameScreen(GooseGame parentClass){
         parent = parentClass;
     }
 
+    /** Initialises the map, user sprite, items, events, window and starting geese
+     * @param delta
+     */
     @Override 
     public void show(){
         //Creates the background, player and the window
@@ -42,10 +46,6 @@ public class GameScreen implements Screen{
         DisplayMode displayMode = Gdx.graphics.getDisplayMode();
         Gdx.graphics.setWindowedMode(displayMode.width, displayMode.height);
 
-        stage = new Stage(new ScreenViewport());
-        Gdx.input.setInputProcessor(stage);
-
-
         //Initialise 2 items and add to Player inventory
         item1 = new Item("energydrink.png", 0, null);
 
@@ -53,8 +53,18 @@ public class GameScreen implements Screen{
         event1 = new Event(1, 1, 5, 5);
         event2 = new Event(1, 1, 5, 5);
 
+        //Initialise 10 geese on the map
+        //Need to work out a way to add different size, position and looks of geese
+        activeGeese = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            newGoose = new Goose("goose.png", 1, 1, 0.5f, 0.5f );
+            activeGeese.add(newGoose);
+        }
     }
 
+    /** 
+     * @param delta
+     */
     @Override
     public void render(float delta) {
         input();
@@ -62,6 +72,10 @@ public class GameScreen implements Screen{
         draw();
     }
 
+    /** Checks the player's keyboard inputs each frame, and responds accordingly
+     * Controls movement, item use activation and updating players movement each movement
+     * @param delta
+     */
     private void input(){
         //Triggers the player movement when the appropriate keys have been pressed
         float speed = userSprite.getSpeed();
@@ -100,6 +114,13 @@ public class GameScreen implements Screen{
 
     }
 
+    /** Updates the game states and checks if anything needs changing after proccessing input
+     * Controls how long an item is in for, if the player is at a map boundary, it a hidden event 
+     * should be activated and the direction of geese movement once the player has moved
+     * 
+     * Also will check if the win / loss conditions have been met and if so with change to the appropriate screen
+     * @param delta
+     */
     private void logic(){
         //Checks if the timer for item 1 has expired and if so changes the speed back to normal
         if (boostTimer > 0f) {
@@ -120,6 +141,7 @@ public class GameScreen implements Screen{
         userSprite.getPSprite().setX(MathUtils.clamp(userSprite.getPSprite().getX(), 0, worldWidth - spriteWidth));
         userSprite.getPSprite().setY(MathUtils.clamp(userSprite.getPSprite().getY(), 0, worldHeight - spriteHeight));
 
+
         //Checks if the user is in an area that triggers a hidden event to occur
         if (userSprite.getPlayerRectangle().overlaps(event1.getRectangle())){
             userSprite.increaseEventActiveCounter();
@@ -131,12 +153,20 @@ public class GameScreen implements Screen{
             //Action for event 2
         }
 
+        //Triggers the change in direction of each goose's direction of movement depending on position of the player
+        for (int i = 0; i < activeGeese.size(); i++) {
+            activeGeese.get(i).gooseMovement(userSprite);
+        }
+
         //Add a trigger for overlap with end goal area and when triggered: 
                 // IF WIN: parent.changeScreen(GooseGame.WINGAME, userSprite);
                 // IF LOSS: parent.changeScreen(GooseGame.LOSSGAME, userSprite);
 
     }
 
+    /** Clears the screen, then renders the background, user, items and geese onto the screen
+     * @param delta
+     */
     private void draw(){
         //Displays the background and player on the screen
         ScreenUtils.clear(Color.BLACK);
@@ -151,7 +181,6 @@ public class GameScreen implements Screen{
         userSprite.getPSprite().draw(batch);
 
         
-
         //Displays the items that the player has in their inventory, if they can still be used
         if (item1.getItemActivationStatus() == false){
             batch.draw(item1.getTexture(), 0f, 4.5f, 0.5f, 0.5f);
@@ -159,11 +188,18 @@ public class GameScreen implements Screen{
 
         
         //Add code to display geese
+        for (int i = 0; i < activeGeese.size(); i++) {
+            activeGeese.get(i).getGoose().draw(batch);
+        }
 
         batch.end();
 
     }
 
+    /** 
+     * @param width
+     * @param height
+     */
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);

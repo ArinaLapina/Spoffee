@@ -18,30 +18,50 @@ public class Event {
         eventRectangle.set(xPos, yPos, widthOfEvent, heightOfEvent);
     }
 
+    /** Causes the event action to trigger
+     * @param delta
+     */
     private void triggerEvent(){
-        //Code that causes something to happen from the event
     }
 
+    /** 
+     * @return Rectangle
+     */
     public Rectangle getRectangle(){
         return eventRectangle;
     }
 
+    /** 
+     * @return boolean
+     */
     public boolean getEventActivationStatus(){
         return eventActivated;
     }
 
+    /** 
+     * @return float
+     */
     public float getXpos(){
         return xPos;
     }
 
+    /** 
+     * @return float
+     */
     public float getYpos(){
         return yPos;
     }
 
+    /** 
+     * @return float
+     */
     public float getWidth(){
         return width;
     }
 
+    /** 
+     * @return float
+     */
     public float getHeight(){
         return height;
     }

@@ -18,6 +18,9 @@ public class GooseGame extends Game {
         changeScreen(GooseGame.MENU);
     }
 
+    /** Creates the screen, and starts the code for the main menu and game window
+     * @param screen
+     */
     public void changeScreen(int screen){
         switch(screen){
             case MENU :
@@ -43,6 +46,11 @@ public class GooseGame extends Game {
         }
     }
 
+    /** When an endgame screen is required, this creates either the win or loss screen and supplies it
+     * with the counters for items and events
+     * @param screen
+     * @param player
+     */
     public void changeScreen(int screen, Player player) {
         if (screen == WINGAME) {
             winScreen = new WinScreen(this, player.getItemUsedCounter(),

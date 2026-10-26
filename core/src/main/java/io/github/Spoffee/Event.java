@@ -38,6 +38,10 @@ public class Event {
         return eventActivated;
     }
 
+    public void setEventActivationStatus(boolean newVal){
+        eventActivated = newVal;
+    }
+
     /** 
      * @return float
      */

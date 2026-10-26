@@ -50,6 +50,11 @@ public class GameScreen implements Screen {
         DisplayMode displayMode = Gdx.graphics.getDisplayMode();
         Gdx.graphics.setWindowedMode(displayMode.width, displayMode.height);
 
+        font = new BitmapFont();
+        font.setUseIntegerPositions(false);
+        font.getData().setScale((viewport.getWorldHeight() / Gdx.graphics.getHeight())*1.5f);
+
+
         // Initialise 2 items and add to Player inventory
         item1 = new Item("energydrink.png", 0, null);
 
@@ -65,8 +70,6 @@ public class GameScreen implements Screen {
             activeGeese.add(newGoose);
         }
 
-        DisplayMode displayMode = Gdx.graphics.getDisplayMode();
-        Gdx.graphics.setWindowedMode(displayMode.width, displayMode.height);
     }
 
     /**
@@ -161,13 +164,19 @@ public class GameScreen implements Screen {
 
         //Checks if the user is in an area that triggers a hidden event to occur
         if (userSprite.getPlayerRectangle().overlaps(event1.getRectangle())){
-            userSprite.increaseEventActiveCounter();
-            // Action for event 1
+            if (event1.getEventActivationStatus() == false){
+                event1.setEventActivationStatus(true);
+                userSprite.increaseEventActiveCounter();
+                // Action for event 2
+            }
         }
 
         if (userSprite.getPlayerRectangle().overlaps(event2.getRectangle())){
-            userSprite.increaseEventActiveCounter();
-            // Action for event 2
+            if (event2.getEventActivationStatus() == false){
+                event2.setEventActivationStatus(true);
+                userSprite.increaseEventActiveCounter();
+                // Action for event 2
+            }
         }
 
         // Triggers the change in direction of each goose's direction of movement

@@ -5,7 +5,8 @@ Main o-- Timer
 
 Class Geese{
    GeeseLeft: Integer
-   disperse() 
+   disperse()
+   decrementGeese()
 }
 
 Class Player{
@@ -18,14 +19,20 @@ Class Item{
    Activated: Boolean
    geeseDispersed: Integer
    linkedEvent: String
+   getItem()
+   getItemStats(item: Item)
+'   useItem(item: Item)
 }
 
 Class Main{
    isEvent()
+   useItem(item: Item)
 }
 
 Class Inventory{
    Counter: Integer
+   pickUpItem()
+   getCurrentItem(inventoryPosition: Integer)
 }
 
 Class Timer{

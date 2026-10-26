@@ -3,7 +3,7 @@ actor User as Foo
 participant Player as Foo1
 participant Inventory as Foo2
 participant Item as Foo3
-participant Main as Foo4 
+participant Main as Foo4
 participant Geese as Foo5
 
 
@@ -15,11 +15,12 @@ Foo2 --> Foo1 : 5) Updated Inventory
 Foo1 --> Foo : 6) New Inventory Displayed
 Foo --> Foo1 : 7) User selects to use selected item
 Foo1 --> Foo2 : 8) getCurrentItem(inventoryPosition)
-Foo2 --> Foo3 : 9) getItemStats(Item)
+Foo2 --> Foo3 : 9) getItemStats(item)
 Foo3 --> Foo2 : 10) Items information
 Foo2 --> Foo1 : 11) Current item and info
-Foo1 --> Foo4 : 12) useItem()
-Foo4 --> Foo5 : 13) DecrementGeese()
+Foo1 --> Foo4 : 12) useItem(item)
+
+Foo4 --> Foo5 : 13) decrementGeese()
 Foo5 --> Foo4 : 14) Geese Left
 Foo4 --> Foo : 15) Displays animation of item, and disperses necessary amount of geese
 @enduml

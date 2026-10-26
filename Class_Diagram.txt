@@ -21,7 +21,6 @@ Class Item{
    linkedEvent: String
    getItem()
    getItemStats(item: Item)
-'   useItem(item: Item)
 }
 
 Class Main{
@@ -36,8 +35,14 @@ Class Inventory{
 }
 
 Class Timer{
-    Current Time: Date/Time
-    updateTime()
+   -startOfTimer : long
+   -duration : long
+   -timeOfPause : long
+   -isTimerPaused : boolean
+   getTime()
+   pause()
+   resume()
+   restartTimer()
 }
 
 Class Events{

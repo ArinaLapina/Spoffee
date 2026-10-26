@@ -2,6 +2,7 @@ package io.github.Spoffee;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -28,10 +29,13 @@ public class Main extends ApplicationAdapter {
         spriteImage = new Texture("person.png");
 
         userSprite = new Sprite(spriteImage);
-        userSprite.setSize(5f, 2.0f);
+        userSprite.setSize(0.75f, 1f);
         userSprite.setPosition(0, 0);
 
         viewport = new FitViewport(8, 5);
+
+        DisplayMode displayMode = Gdx.graphics.getDisplayMode();
+        Gdx.graphics.setWindowedMode(displayMode.width, displayMode.height);
 
     }
 
@@ -55,26 +59,22 @@ public class Main extends ApplicationAdapter {
     }
 
     public void input(){
-        float speed = 3.75f;
+        float speed = 1f;
         float delta = Gdx.graphics.getDeltaTime();
 
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+        // Movement input
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
             userSprite.translateX(speed * delta);
         } 
-        
-        else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
             userSprite.translateX(-speed * delta);
         }
-
-        else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
             userSprite.translateY(speed * delta);
         }
-
-        else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
             userSprite.translateY(-speed * delta);
         }
-
-
     }
 
     public void logic(){

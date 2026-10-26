@@ -1,0 +1,64 @@
+@startuml
+
+Events *-- Position
+Events *-- Size
+Events *-- Effect
+Events *-- Activation
+Player *-- Position
+Player *-- Size
+Player *-- Speed
+Player *-- Sprite
+Player *-- Input
+Player *-- Inventory
+Goose *-- Size
+Goose *-- Position 
+Goose *-- Sprite
+Goose *-- Direction
+Item *-- Effect
+Item *-- Activation
+
+
+Class Inventory{
+    list items
+    int size
+}
+
+Class Position{
+     int x
+     int y
+}
+
+Class Sprite{
+     Texture texture
+}
+
+Class Input{
+     bool keyUp()
+     bool keyDown()
+     bool keyLeft()
+     bool keyRight()
+}
+
+Class Size{
+   float width
+   float height
+}
+
+Class Speed{
+   float speed
+}
+
+Class Effect{
+    int geeseDispersed
+}
+
+Class Activation{
+    bool Activated
+    bool Activate()
+}
+
+Class Direction{
+   float x
+   float y
+}
+@enduml

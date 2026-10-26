@@ -8,6 +8,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -23,8 +24,9 @@ public class GameScreen implements Screen{
     private Player userSprite;
     private FitViewport viewport;
     private ArrayList<Goose> activeGeese;
-     private Goose newGoose;
+    private Goose newGoose;
     private float boostTimer = 0f;
+    private BitmapFont font;
 
     public GameScreen(GooseGame parentClass){
         parent = parentClass;
@@ -37,7 +39,8 @@ public class GameScreen implements Screen{
     public void show(){
         //Creates the background, player and the window
         batch = new SpriteBatch();
-        
+
+    
         backgroundImage = new Texture("background.png");
 
         userSprite = new Player();
@@ -46,6 +49,11 @@ public class GameScreen implements Screen{
         DisplayMode displayMode = Gdx.graphics.getDisplayMode();
         Gdx.graphics.setWindowedMode(displayMode.width, displayMode.height);
 
+        font = new BitmapFont();
+        font.setUseIntegerPositions(false);
+        font.getData().setScale((viewport.getWorldHeight() / Gdx.graphics.getHeight())*1.5f);
+        
+
         //Initialise 2 items and add to Player inventory
         item1 = new Item("energydrink.png", 0, null);
 
@@ -53,7 +61,7 @@ public class GameScreen implements Screen{
         event1 = new Event(1, 1, 5, 5);
         event2 = new Event(1, 1, 5, 5);
 
-        //Initialise 10 geese on the map
+        //Initialise X geese on the map
         //Need to work out a way to add different size, position and looks of geese
         activeGeese = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
@@ -143,12 +151,12 @@ public class GameScreen implements Screen{
 
 
         //Checks if the user is in an area that triggers a hidden event to occur
-        if (userSprite.getPlayerRectangle().overlaps(event1.getRectangle())){
+        if (userSprite.getPlayerRectangle().overlaps(event1.getRectangle()) && event1.getEventActivationStatus()==false){
             userSprite.increaseEventActiveCounter();
             //Action for event 1
         }
 
-        if (userSprite.getPlayerRectangle().overlaps(event2.getRectangle())){
+        if (userSprite.getPlayerRectangle().overlaps(event2.getRectangle())&& event1.getEventActivationStatus()==false){
             userSprite.increaseEventActiveCounter();
             //Action for event 2
         }
@@ -178,6 +186,10 @@ public class GameScreen implements Screen{
 
         batch.draw(backgroundImage, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
 
+        font.draw(batch, "Timer", 6.9f, 4.5f);
+        font.draw(batch, "Items Used: " + userSprite.getItemUsedCounter(), 6.9f, 4.3f);
+        font.draw(batch, "Events Activated: " + userSprite.getEventActiveCounter(), 6.9f, 4.1f);
+
         userSprite.getPSprite().draw(batch);
 
         
@@ -189,7 +201,9 @@ public class GameScreen implements Screen{
         
         //Add code to display geese
         for (int i = 0; i < activeGeese.size(); i++) {
-            activeGeese.get(i).getGoose().draw(batch);
+            if (activeGeese.get(i).getActiveStatus()){
+                activeGeese.get(i).getGoose().draw(batch);
+            }
         }
 
         batch.end();
@@ -221,5 +235,6 @@ public class GameScreen implements Screen{
     public void dispose() {
         batch.dispose();
         backgroundImage.dispose();
+        font.dispose();
     }
 }

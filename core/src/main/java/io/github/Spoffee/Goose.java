@@ -9,6 +9,7 @@ public class Goose {
     private Vector2 goosePos;
     private Vector2 playerPos;
     private Vector2 direction;
+    private boolean active = true;
     
 
     public Goose(String filePath, int xPos, int yPos, float width, float height){
@@ -38,8 +39,10 @@ public class Goose {
 
         gooseSprite.translateX(direction.x*0.01f);
         gooseSprite.translateY(direction.y*0.01f);
+    }
 
-
+    public boolean getActiveStatus(){
+        return active;
     }
 
 }

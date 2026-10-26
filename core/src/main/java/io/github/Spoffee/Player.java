@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Rectangle;
 
 
 public class Player {
-    private float speed = 0.75f;
+    private float speed = 0.5f;
     private Sprite playerSprite;
     private int itemsUsed = 0;
     private int hiddenEventsActivated = 0;

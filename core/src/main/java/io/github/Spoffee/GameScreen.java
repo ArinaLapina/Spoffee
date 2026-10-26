@@ -23,7 +23,7 @@ public class GameScreen implements Screen{
     private Player userSprite;
     private FitViewport viewport;
     private ArrayList<Goose> activeGeese;
-    private Goose newGoose;
+     private Goose newGoose;
     private float boostTimer = 0f;
 
     public GameScreen(GooseGame parentClass){
@@ -102,7 +102,7 @@ public class GameScreen implements Screen{
         if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)){
             item1.setItemActivationStatus(true);
             userSprite.increaseItemUsedCounter();
-            userSprite.setSpeed(1.25f);
+            userSprite.setSpeed(1f);
             boostTimer = 10f;
         }
 
@@ -128,7 +128,7 @@ public class GameScreen implements Screen{
 
             if (boostTimer <= 0f) {
                 boostTimer = 0f;
-                userSprite.setSpeed(1f);
+                userSprite.setSpeed(0.5f);
             }
         }
 

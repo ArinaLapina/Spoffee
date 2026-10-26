@@ -3,25 +3,32 @@ Inventory "1" *-- "many" Item : contains
 Player "1" *-- "1" Inventory: contains
 Main o-- Timer
 
-Class Geese{
-   GeeseLeft: Integer
+Class Goose{
+   xPos: Integer
+   yPos: Integer
+   Width: Float
+   Height: Float
+   Dispersed: Boolean
    disperse()
-   decrementGeese()
+   gooseMovement(Player)
 }
 
 Class Player{
+   Speed: Float
+   itemsUsed: Integer
+   hiddenEventsActivated: Integer
    Position: List
    Energy: Integer
    Score: Integer
   }
 
 Class Item{
-   Activated: Boolean
+   itemUsed: Boolean
    geeseDispersed: Integer
    linkedEvent: String
    getItem()
    getItemStats(item: Item)
-'   useItem(item: Item)
+   useItem(item: Item)
 }
 
 Class Main{
@@ -47,7 +54,11 @@ Class Timer{
 }
 
 Class Events{
-    Activated: Boolean
-    activateEvent()
+   xPos: Integer
+   yPos: Integer
+   Width: Float
+   Height: Float
+   eventActivated: Boolean
+   activateEvent()
 }
 @enduml

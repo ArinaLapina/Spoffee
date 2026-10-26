@@ -36,8 +36,14 @@ Class Inventory{
 }
 
 Class Timer{
-    Current Time: Date/Time
-    updateTime()
+   -startOfTimer : long
+   -duration : long
+   -timeOfPause : long
+   -isTimerPaused : boolean
+   getTime()
+   pause()
+   resume()
+   restartTimer()
 }
 
 Class Events{

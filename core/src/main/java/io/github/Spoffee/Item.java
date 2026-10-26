@@ -5,12 +5,12 @@ import com.badlogic.gdx.graphics.Texture;
 public class Item {
     private Texture itemTexture;
     private boolean itemUsed = false;
-    private int geeseDispered;
+    private int geeseDispersed;
     private Event linkedEvent;
 
-    public Item(String filePath, int geeseDisperalNum, Event eventLinked){
+    public Item(String filePath, int geeseDispersalNum, Event eventLinked){
         itemTexture = new Texture(filePath);
-        geeseDispered = geeseDisperalNum;
+        geeseDispersed = geeseDispersalNum;
         linkedEvent = eventLinked;
     }
 
@@ -20,35 +20,35 @@ public class Item {
     private void useItem(){
     }
 
-    /** 
+    /**
      * @return Texture
      */
     public Texture getTexture(){
         return itemTexture;
     }
 
-    /** 
+    /**
      * @return boolean
      */
     public boolean  getItemActivationStatus(){
         return itemUsed;
     }
 
-    /** 
+    /**
      * @param varToSet
      */
     public void setItemActivationStatus(boolean varToSet){
         itemUsed = varToSet;
     }
 
-    /** 
+    /**
      * @return int
      */
-    public int getGeeseDispered(){
-        return geeseDispered;
+    public int getGeeseDispersed(){
+        return geeseDispersed;
     }
 
-    /** 
+    /**
      * @return Event
      */
     public Event getLinkedEvent(){

@@ -17,7 +17,7 @@ Foo1 --> Foo : 6) New Inventory Displayed
 
 == Using an item ==
 Foo --> Foo1 : 7) User selects to use selected item
-Foo1 --> Foo2 : 8) getCurrentItem(inventoryPosition)
+Foo1 --> Foo2 : 8) getItem(inventoryPosition)
 Foo2 --> Foo3 : 9) getItemStats(item)
 Foo3 --> Foo2 : 10) Items information
 Foo2 --> Foo1 : 11) Current item and info

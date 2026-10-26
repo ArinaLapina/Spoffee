@@ -12,7 +12,9 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-/** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
+/**
+ * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms.
+ */
 public class Main extends ApplicationAdapter {
     private SpriteBatch batch;
     private Texture backgroundImage;
@@ -23,7 +25,7 @@ public class Main extends ApplicationAdapter {
     @Override
     public void create() {
         batch = new SpriteBatch();
-        
+
         backgroundImage = new Texture("background.png");
 
         spriteImage = new Texture("person.png");
@@ -53,19 +55,19 @@ public class Main extends ApplicationAdapter {
         spriteImage.dispose();
     }
 
-     @Override
+    @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);
     }
 
-    public void input(){
+    public void input() {
         float speed = 1f;
         float delta = Gdx.graphics.getDeltaTime();
 
         // Movement input
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
             userSprite.translateX(speed * delta);
-        } 
+        }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
             userSprite.translateX(-speed * delta);
         }
@@ -77,7 +79,7 @@ public class Main extends ApplicationAdapter {
         }
     }
 
-    public void logic(){
+    public void logic() {
         float worldWidth = viewport.getWorldWidth();
         float worldHeight = viewport.getWorldHeight();
         float spriteWidth = userSprite.getWidth();
@@ -85,10 +87,10 @@ public class Main extends ApplicationAdapter {
 
         userSprite.setX(MathUtils.clamp(userSprite.getX(), 0, worldWidth - spriteWidth));
         userSprite.setY(MathUtils.clamp(userSprite.getY(), 0, worldHeight - spriteHeight));
-  
+
     }
 
-    public void draw(){
+    public void draw() {
         ScreenUtils.clear(Color.BLACK);
         viewport.apply();
         batch.setProjectionMatrix(viewport.getCamera().combined);

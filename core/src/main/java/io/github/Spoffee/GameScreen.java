@@ -48,6 +48,7 @@ public class GameScreen implements Screen {
 
         // Initialise 2 items and add to Player inventory
         item1 = new Item("energydrink.png", 0, null);
+        userSprite.getInventory().pickUpItem(item1);
 
         // Initialise 2 hidden events, and create rectangles
         event1 = new Event(1, 1, 5, 5);
@@ -106,10 +107,13 @@ public class GameScreen implements Screen {
 
         // Checks if the key to trigger item 1 has been activated
         if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
-            item1.setItemActivationStatus(true);
-            userSprite.increaseItemUsedCounter();
-            userSprite.setSpeed(1f);
-            boostTimer = 10f;
+            if (boostTimer <= 0f && !item1.getItemActivationStatus()) {
+                item1.setItemActivationStatus(true);
+// coding note: commented out 26/10 as functionality moved into Inventory when it was made
+//            userSprite.increaseItemUsedCounter();
+                userSprite.setSpeed(1f);
+                boostTimer = 10f;
+            }
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
@@ -122,7 +126,7 @@ public class GameScreen implements Screen {
 
     /**
      * Updates the game states and checks if anything needs changing after
-     * proccessing input
+     * processing input
      * Controls how long an item is in for, if the player is at a map boundary, it a
      * hidden event
      * should be activated and the direction of geese movement once the player has
@@ -197,7 +201,7 @@ public class GameScreen implements Screen {
 
         // Displays the items that the player has in their inventory, if they can still
         // be used
-        if (item1.getItemActivationStatus() == false) {
+        if (!item1.getItemActivationStatus()) {
             batch.draw(item1.getTexture(), 0f, 4.5f, 0.5f, 0.5f);
         }
 

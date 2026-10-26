@@ -1,9 +1,13 @@
 package io.github.Spoffee;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import java.util.ArrayList;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
 
 public class Player {
@@ -12,7 +16,7 @@ public class Player {
     private int itemsUsed = 0;
     private int hiddenEventsActivated = 0;
     private Texture spriteImage;
-    private ArrayList<Item> inventory = new ArrayList<Item>();
+    private Inventory playerInventory = new Inventory();
     private Rectangle playerRectangle = new Rectangle(0, 0, 0.75f, 1f);
 
     public Player(){
@@ -29,6 +33,38 @@ public class Player {
         return playerRectangle;
     }
 
+    public void drawPlayer(SpriteBatch batch){
+        playerSprite.draw(batch);
+    }
+
+    public void playerInput(){
+        float delta = Gdx.graphics.getDeltaTime();
+
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
+            playerSprite.translateX(speed * delta);
+            setRectangle();
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
+            playerSprite.translateX(-speed * delta);
+            setRectangle();
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
+            playerSprite.translateY(speed * delta);
+            setRectangle();
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
+            playerSprite.translateY(-speed * delta);
+            setRectangle();
+        }
+    }
+
+    public void playerLogic(FitViewport viewport){
+        float worldWidth = viewport.getWorldWidth();
+        float worldHeight = viewport.getWorldHeight();
+
+        playerSprite.setX(MathUtils.clamp(playerSprite.getX(), 0, worldWidth - playerSprite.getWidth()));
+        playerSprite.setY(MathUtils.clamp(playerSprite.getY(), 0, worldHeight - playerSprite.getHeight()));
+    }
     /** 
      * @param delta
      */
@@ -79,4 +115,7 @@ public class Player {
         hiddenEventsActivated += 1;
     }
 
+    public Inventory getInventory(){
+        return playerInventory;
+    }
 }

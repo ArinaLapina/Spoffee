@@ -4,20 +4,17 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class GameScreen implements Screen {
     private final GooseGame parent;
     private SpriteBatch batch;
-    private Item item1;
     private Event event1;
     private Event event2;
     private Texture backgroundImage;
@@ -25,7 +22,6 @@ public class GameScreen implements Screen {
     private FitViewport viewport;
     private ArrayList<Goose> activeGeese;
     private Goose newGoose;
-    private float boostTimer = 0f;
     private BitmapFont font;
 
     public GameScreen(GooseGame parentClass) {
@@ -53,19 +49,17 @@ public class GameScreen implements Screen {
         font = new BitmapFont();
         font.setUseIntegerPositions(false);
         font.getData().setScale((viewport.getWorldHeight() / Gdx.graphics.getHeight())*1.5f);
+        font.setColor(Color.BLACK);
 
-
-        // Initialise 2 items and add to Player inventory
-        item1 = new Item("energydrink.png", 0, null);
 
         // Initialise 2 hidden events, and create rectangles
         event1 = new Event(1, 1, 5, 5);
         event2 = new Event(1, 1, 5, 5);
 
-        //Initialise 10 geese on the map
+        //Initialise 5 geese on the map
         //Need to work out a way to add different size, position and looks of geese
         activeGeese = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 5; i++) {
             newGoose = new Goose("goose.png", 1, 1, 0.5f, 0.5f);
             activeGeese.add(newGoose);
         }
@@ -90,38 +84,12 @@ public class GameScreen implements Screen {
      * @param delta
      */
     private void input() {
+
         // Triggers the player movement when the appropriate keys have been pressed
-        float speed = userSprite.getSpeed();
-        float delta = Gdx.graphics.getDeltaTime();
+        userSprite.playerInput();
 
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
-            userSprite.getPSprite().translateX(speed * delta);
-            userSprite.setRectangle();
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
-            userSprite.getPSprite().translateX(-speed * delta);
-            userSprite.setRectangle();
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
-            userSprite.getPSprite().translateY(speed * delta);
-            userSprite.setRectangle();
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
-            userSprite.getPSprite().translateY(-speed * delta);
-            userSprite.setRectangle();
-        }
-
-        // Checks if the key to trigger item 1 has been activated
-        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
-            item1.setItemActivationStatus(true);
-            userSprite.increaseItemUsedCounter();
-            userSprite.setSpeed(1f);
-            boostTimer = 10f;
-        }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
-            // Code for activation event2
-        }
+        // Checks if the key to trigger any items have been activated
+        userSprite.getInventory().itemInput(userSprite, activeGeese);
 
         // Add code to display pause / resume game
 
@@ -141,25 +109,8 @@ public class GameScreen implements Screen {
      * @param delta
      */
     private void logic() {
-        // Checks if the timer for item 1 has expired and if so changes the speed back
-        // to normal
-        if (boostTimer > 0f) {
-            boostTimer -= Gdx.graphics.getDeltaTime();
-
-            if (boostTimer <= 0f) {
-                boostTimer = 0f;
-                userSprite.setSpeed(0.5f);
-            }
-        }
-
         // Checks if the user stops the player going out of bounds
-        float worldWidth = viewport.getWorldWidth();
-        float worldHeight = viewport.getWorldHeight();
-        float spriteWidth = userSprite.getPSprite().getWidth();
-        float spriteHeight = userSprite.getPSprite().getHeight();
-
-        userSprite.getPSprite().setX(MathUtils.clamp(userSprite.getPSprite().getX(), 0, worldWidth - spriteWidth));
-        userSprite.getPSprite().setY(MathUtils.clamp(userSprite.getPSprite().getY(), 0, worldHeight - spriteHeight));
+        userSprite.playerLogic(viewport);
 
 
         //Checks if the user is in an area that triggers a hidden event to occur
@@ -211,17 +162,12 @@ public class GameScreen implements Screen {
         font.draw(batch, "Items Used: " + userSprite.getItemUsedCounter(), 6.9f, 4.3f);
         font.draw(batch, "Events Activated: " + userSprite.getEventActiveCounter(), 6.9f, 4.1f);
 
-        userSprite.getPSprite().draw(batch);
-
-        // Displays the items that the player has in their inventory, if they can still
-        // be used
-        if (item1.getItemActivationStatus() == false) {
-            batch.draw(item1.getTexture(), 0f, 4.5f, 0.5f, 0.5f);
-        }
+        userSprite.drawPlayer(batch);
+        userSprite.getInventory().drawItems(batch);
 
         // Add code to display geese
         for (int i = 0; i < activeGeese.size(); i++) {
-            if (activeGeese.get(i).getActiveStatus()){
+            if (activeGeese.get(i).getActiveStatus() == true){
                 activeGeese.get(i).getGoose().draw(batch);
             }
         }

@@ -1,0 +1,59 @@
+package io.github.Spoffee;
+import java.util.ArrayList;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+public class Inventory {
+    private ArrayList<Item> allItems = new ArrayList<>();
+    private ArrayList<Item> playerInventory = new ArrayList<>();
+    
+    public Inventory(){
+        //Create objects of each item that could be used by a player
+        Item item1 = new Item("energydrink.png", 0, null, "energyDrink");
+        Item item2 = new Item("foghorn.png", 3, null, "speaker");
+
+        allItems.add(item1);
+        allItems.add(item2);
+
+        //Adds a random item to the player's inventory
+        int firstRandomNum = (int) (Math.random() * allItems.size());
+        playerInventory.add(allItems.get(firstRandomNum));
+
+        //Adds a different random item to the player's inventory, while making sure they are different
+        while (playerInventory.size() != 2){
+            int secondRandomNum = (int) (Math.random() * (allItems.size()));
+
+            if (firstRandomNum != secondRandomNum){
+                playerInventory.add(allItems.get(secondRandomNum));
+            }
+        }
+    }
+
+    public void drawItems(SpriteBatch batch){
+        if (playerInventory.get(0).getItemActivationStatus() == false){
+            batch.draw(playerInventory.get(0).getTexture(),0f, 4.5f, 0.5f, 0.5f);
+        }
+   
+        if (playerInventory.get(1).getItemActivationStatus() == false){
+            batch.draw(playerInventory.get(1).getTexture(),0.5f, 4.5f, 0.5f, 0.5f);
+        }
+    }
+
+    public void  itemInput(Player userSprite, ArrayList<Goose> activeGeese){
+        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
+            playerInventory.get(0).useItem(playerInventory.get(0), userSprite, activeGeese);
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
+            playerInventory.get(1).useItem(playerInventory.get(1), userSprite, activeGeese);            // Code for activation event2
+        }
+    }
+
+    public ArrayList<Item> getInventory(){
+        return playerInventory;
+    }
+
+
+}

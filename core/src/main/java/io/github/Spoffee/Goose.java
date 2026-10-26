@@ -45,4 +45,8 @@ public class Goose {
         return active;
     }
 
+    public void disperseGoose(){
+        active = false;
+    }
+
 }

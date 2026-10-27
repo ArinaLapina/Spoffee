@@ -109,8 +109,6 @@ public class GameScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
             if (boostTimer <= 0f && !item1.getItemActivationStatus()) {
                 item1.setItemActivationStatus(true);
-// coding note: commented out 26/10 as functionality moved into Inventory when it was made
-//            userSprite.increaseItemUsedCounter();
                 userSprite.setSpeed(1f);
                 boostTimer = 10f;
             }

@@ -19,7 +19,6 @@ Class Item{
    Activated: Boolean
    geeseDispersed: Integer
    linkedEvent: String
-   getItem()
    getItemStats(item: Item)
 }
 
@@ -29,9 +28,11 @@ Class Main{
 }
 
 Class Inventory{
-   Counter: Integer
-   pickUpItem()
+   itemsUsed: Integer
+   pickUpItem(item: Item)
    getItem(inventoryPosition: Integer)
+   useItem(inventoryPosition: Integer)
+   getItemsUsed()
 }
 
 Class Timer{

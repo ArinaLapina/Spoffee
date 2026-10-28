@@ -9,13 +9,15 @@ public class Event {
     private float width;
     private float height;
     private Rectangle eventRectangle = new Rectangle();
+    private String eventName;
 
-    public Event(int x, int y, int widthOfEvent, int heightOfEvent){
+    public Event(int x, int y, int widthOfEvent, int heightOfEvent, String nameOfEvent){
         xPos = x;
         yPos = y;
         width = widthOfEvent;
         height = heightOfEvent;
         eventRectangle.set(xPos, yPos, widthOfEvent, heightOfEvent);
+        eventName = nameOfEvent;
     }
 
     /** Causes the event action to trigger

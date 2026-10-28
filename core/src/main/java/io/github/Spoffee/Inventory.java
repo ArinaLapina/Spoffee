@@ -31,6 +31,10 @@ public class Inventory {
         }
     }
 
+    /** 
+     * If the item is in the player's inventory then it will be displayed on the screen
+     * @param batch
+     */
     public void drawItems(SpriteBatch batch){
         if (playerInventory.get(0).getItemActivationStatus() == false){
             batch.draw(playerInventory.get(0).getTexture(),0f, 4.5f, 0.5f, 0.5f);
@@ -41,6 +45,11 @@ public class Inventory {
         }
     }
 
+    /** 
+     * Checks if the input trigger for item use has been activated, and if so calls the item use
+     * @param userSprite
+     * @param activeGeese
+     */
     public void  itemInput(Player userSprite, ArrayList<Goose> activeGeese){
         if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
             playerInventory.get(0).useItem(playerInventory.get(0), userSprite, activeGeese);
@@ -51,6 +60,9 @@ public class Inventory {
         }
     }
 
+    /** 
+     * @return ArrayList<Item>
+     */
     public ArrayList<Item> getInventory(){
         return playerInventory;
     }

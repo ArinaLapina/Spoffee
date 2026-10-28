@@ -53,14 +53,27 @@ public class GameScreen implements Screen {
 
 
         // Initialise 2 hidden events, and create rectangles
-        event1 = new Event(1, 1, 5, 5);
-        event2 = new Event(1, 1, 5, 5);
+        event1 = new Event(1, 1, 5, 5, "lecture");
+        event2 = new Event(1, 1, 5, 5, "lakeGeese");
 
-        //Initialise 5 geese on the map
-        //Need to work out a way to add different size, position and looks of geese
+        //Initialise 5 geese on the map with different starting locations
+ 
+        float[][] geeseLocations = new float[][] {{1, 2, 0.5f, 0.5f}, 
+                                                {0, 4, 0.5f, 0.5f},
+                                                {1, 1, 0.5f, 0.5f},
+                                                {2, 2, 0.5f, 0.5f},
+                                                {3, 5, 0.5f, 0.5f},
+                                                {2.5f, 2.5f, 0.5f, 0.5f},
+                                            };
+
+
         activeGeese = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            newGoose = new Goose("goose.png", 1, 1, 0.5f, 0.5f);
+        for (int i = 0; i < 6; i++) {
+            newGoose = new Goose("goose.png", (int) geeseLocations[i][0], 
+                                                        (int) geeseLocations[i][1],
+                                                        geeseLocations[i][2], 
+                                                        geeseLocations[i][3]);
+            
             activeGeese.add(newGoose);
         }
 
@@ -84,7 +97,6 @@ public class GameScreen implements Screen {
      * @param delta
      */
     private void input() {
-
         // Triggers the player movement when the appropriate keys have been pressed
         userSprite.playerInput();
 

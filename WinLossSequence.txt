@@ -1,2 +1,39 @@
 @startuml
-title Game Win/Loss Conditions
+title Win/Loss condition
+actor User as Foo
+participant Player as Foo1
+participant Main as Foo2
+participant GooseContainer as Foo3
+participant Timer as Foo4
+
+== Win Condition ==
+
+Foo --> Foo1 : 1) User moves the player to the bus
+Foo1 --> Foo2 : 2) hasWon()
+Foo2 --> Foo3 : 3) getGeese()
+Foo3 --> Foo2 : 4) Geese: A list of geese not dispersed
+
+alt len(Geese) == 0
+    Foo2 --> Foo1 : 5) True
+    Foo1 --> Foo2 : 6) getScore()
+    Foo2 --> Foo1 : 7) Score
+    Foo1 --> Foo : 8) Player displayed getting on bus (win scene)
+    Foo1 --> Foo : 9) Score is Displayed
+else len(Geese) > 0
+    Foo2 --> Foo1 : 5) False
+    Foo1 --> Foo : 6) Tell user they can't board the bus (game continues)
+end
+
+
+== Lose Condition ==
+loop each frame (while time != 0)
+    Foo2 --> Foo4 : 10) getTime()
+    Foo4 --> Foo2 : 11) Time
+end 
+Foo2 --> Foo1 : 13) Player has lost
+Foo1 --> Foo2 : 14) getScore()
+Foo2 --> Foo1 : 15) Score
+Foo1 --> Foo : 16) Display Player lost scene
+Foo1 --> Foo : 17) Display Players score
+
+@enduml

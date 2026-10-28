@@ -13,13 +13,17 @@ Foo1 --> Foo2 : 2) hasWon()
 Foo2 --> Foo3 : 3) getGeese()
 Foo3 --> Foo2 : 4) Geese: A list of geese not dispersed
 
-alt len(Geese) == 0
+Foo2 -> Foo4 : 5) getTime()
+Foo4 --> Foo2 : 6) Time remaining
+
+alt len(Geese) == 0 AND Time > 0 AND Energy > 0
     Foo2 --> Foo1 : 5) True
     Foo1 --> Foo2 : 6) getScore()
     Foo2 --> Foo1 : 7) Score
     Foo1 --> Foo : 8) Player displayed getting on bus (win scene)
     Foo1 --> Foo : 9) Score is Displayed
-else len(Geese) > 0
+
+else len(Geese) > 0 AND Time > 0 AND Energy > 0
     Foo2 --> Foo1 : 5) False
     Foo1 --> Foo : 6) Tell user they can't board the bus (game continues)
 end

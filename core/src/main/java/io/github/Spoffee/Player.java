@@ -58,12 +58,15 @@ public class Player {
         }
     }
 
-    public void playerLogic(FitViewport viewport){
-        float worldWidth = viewport.getWorldWidth();
-        float worldHeight = viewport.getWorldHeight();
+    public void playerLogic(FitViewport viewport, GameScreen display){
+        float worldWidth = 80f;
+        float worldHeight = 50f;
 
+        
         playerSprite.setX(MathUtils.clamp(playerSprite.getX(), 0, worldWidth - playerSprite.getWidth()));
         playerSprite.setY(MathUtils.clamp(playerSprite.getY(), 0, worldHeight - playerSprite.getHeight()));
+        
+        
     }
     /** 
      * @param delta

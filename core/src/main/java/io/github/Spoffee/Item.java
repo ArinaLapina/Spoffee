@@ -10,6 +10,7 @@ public class Item {
     private boolean itemUsed = false;
     private int geeseDispered;
     private Event linkedEvent;
+    private Timer timerForItem;
 
     public Item(String filePath, int geeseDisperalNum, Event eventLinked, String itemNameInput){
         itemTexture = new Texture(filePath);
@@ -45,7 +46,6 @@ public class Item {
         }
     }
     
-
     /** 
      * @return Texture
      */

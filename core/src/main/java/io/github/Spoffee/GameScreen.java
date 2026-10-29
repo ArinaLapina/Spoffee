@@ -6,9 +6,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -17,12 +22,17 @@ public class GameScreen implements Screen {
     private SpriteBatch batch;
     private Event event1;
     private Event event2;
-    private Texture backgroundImage;
+    private Texture backgroundImg;
     private Player userSprite;
     private FitViewport viewport;
     private ArrayList<Goose> activeGeese;
     private Goose newGoose;
     private BitmapFont font;
+    private Timer timerForGame;
+
+    private TiledMap map;
+    private OrthogonalTiledMapRenderer mapRenderer;
+    private static final float UNIT_SCALE = 1f / 32f;
 
     public GameScreen(GooseGame parentClass) {
         parent = parentClass;
@@ -38,17 +48,22 @@ public class GameScreen implements Screen {
         // Creates the background, player and the window
         batch = new SpriteBatch();
         
-        backgroundImage = new Texture("background.png");
+        backgroundImg = new Texture("background.png");
+
+        map = new TmxMapLoader().load("maps/map.tmx");
+        mapRenderer = new OrthogonalTiledMapRenderer(map, UNIT_SCALE);
+
 
         userSprite = new Player();
+        timerForGame = new Timer(3000000);
 
-        viewport = new FitViewport(8, 5);
+        viewport = new FitViewport(10, 7.5f);
         DisplayMode displayMode = Gdx.graphics.getDisplayMode();
         Gdx.graphics.setWindowedMode(displayMode.width, displayMode.height);
 
         font = new BitmapFont();
         font.setUseIntegerPositions(false);
-        font.getData().setScale((viewport.getWorldHeight() / Gdx.graphics.getHeight())*1.5f);
+        font.getData().setScale((viewport.getWorldHeight() / Gdx.graphics.getHeight())*2f);
         font.setColor(Color.BLACK);
 
 
@@ -79,6 +94,34 @@ public class GameScreen implements Screen {
 
     }
 
+    private void updateCamera(){
+        float mapWidth = map.getProperties().get("width", Integer.class)
+            * map.getProperties().get("tilewidth", Integer.class)
+            * UNIT_SCALE;
+        
+        float mapHeight = map.getProperties().get("height", Integer.class)
+            * map.getProperties().get("tileheight", Integer.class)
+            * UNIT_SCALE;
+        
+        float halfViewportWidth = viewport.getWorldWidth() / 2f;
+        float halfViewportHeight = viewport.getWorldHeight() / 2f;
+    
+        float cameraX = MathUtils.clamp(
+            userSprite.getPSprite().getX() + userSprite.getPSprite().getWidth() / 2f,
+            halfViewportWidth,
+            mapWidth - halfViewportWidth
+        );
+
+        float cameraY = MathUtils.clamp(
+                userSprite.getPSprite().getY() + userSprite.getPSprite().getHeight() / 2f,
+                halfViewportHeight,
+                mapHeight - halfViewportHeight
+        );
+
+        viewport.getCamera().position.set(cameraX, cameraY, 0);
+        viewport.getCamera().update();
+        }
+
     /**
      * @param delta
      */
@@ -107,6 +150,7 @@ public class GameScreen implements Screen {
 
     }
 
+
     /**
      * Updates the game states and checks if anything needs changing after
      * proccessing input
@@ -122,7 +166,9 @@ public class GameScreen implements Screen {
      */
     private void logic() {
         // Checks if the user stops the player going out of bounds
-        userSprite.playerLogic(viewport);
+        userSprite.playerLogic(viewport, this);
+
+        updateCamera();
 
 
         //Checks if the user is in an area that triggers a hidden event to occur
@@ -148,6 +194,10 @@ public class GameScreen implements Screen {
             activeGeese.get(i).gooseMovement(userSprite);
         }
 
+        if (timerForGame.toString().equals("0:00")){
+            parent.changeScreen(GooseGame.LOSSGAME, userSprite);
+        }
+
         // Add a trigger for overlap with end goal area and when triggered:
         // IF WIN: parent.changeScreen(GooseGame.WINGAME, userSprite);
         // IF LOSS: parent.changeScreen(GooseGame.LOSSGAME, userSprite);
@@ -160,33 +210,31 @@ public class GameScreen implements Screen {
      *
      * @param delta
      */
-    private void draw() {
-        // Displays the background and player on the screen
-        ScreenUtils.clear(Color.BLACK);
-        viewport.apply();
-        batch.setProjectionMatrix(viewport.getCamera().combined);
+private void draw() {
+    ScreenUtils.clear(Color.BLACK);
 
-        batch.begin();
+    viewport.apply();
 
-        batch.draw(backgroundImage, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+    mapRenderer.setView((OrthographicCamera) viewport.getCamera());
+    mapRenderer.render();
 
-        font.draw(batch, "Timer", 6.9f, 4.5f);
-        font.draw(batch, "Items Used: " + userSprite.getItemUsedCounter(), 6.9f, 4.3f);
-        font.draw(batch, "Events Activated: " + userSprite.getEventActiveCounter(), 6.9f, 4.1f);
+    batch.setProjectionMatrix(viewport.getCamera().combined);
+    batch.begin();
 
-        userSprite.drawPlayer(batch);
-        userSprite.getInventory().drawItems(batch);
+    userSprite.drawPlayer(batch);
 
-        // Add code to display geese
-        for (int i = 0; i < activeGeese.size(); i++) {
-            if (activeGeese.get(i).getActiveStatus() == true){
-                activeGeese.get(i).getGoose().draw(batch);
-            }
+    for (Goose goose : activeGeese) {
+        if (goose.getActiveStatus()) {
+            goose.getGoose().draw(batch);
         }
-
-        batch.end();
-
     }
+
+    batch.end();
+}
+
+//font.draw(batch, "Timer" + timerForGame.toString(), 6f, 4.5f);
+//font.draw(batch, "Items Used: " + userSprite.getItemUsedCounter(), 6f, 4.3f);
+//font.draw(batch, "Events Activated: " + userSprite.getEventActiveCounter(), 6f, 4.1f);
 
     /**
      * @param width
@@ -195,6 +243,11 @@ public class GameScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);
+    }
+
+
+    public ArrayList<Goose> getActiveGeese(){
+        return activeGeese;
     }
 
     @Override
@@ -212,7 +265,6 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         batch.dispose();
-        backgroundImage.dispose();
         font.dispose();
     }
 }

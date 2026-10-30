@@ -19,17 +19,19 @@ public class Item {
         itemName = itemNameInput;
     }
 
-    /** Causes the action based off the item to trigger
+    /** Checks if the relavent item has been used and if not triggers it's action
      * @param delta
      */
     public void useItem(Item itemToUse, Player userSprite, ArrayList<Goose> activeGeese){
-        if ("energyDrink".equals(itemName)){
+        if ("energyDrink".equals(itemName) && itemToUse.getItemActivationStatus() == false){
+            //The energy drink item increases the players speed
             itemUsed = true;
             userSprite.increaseItemUsedCounter();
             userSprite.setSpeed(1f);
         }
 
-        if ("speaker".equals(itemName)){
+        if ("speaker".equals(itemName)&& itemToUse.getItemActivationStatus() == false){
+            //The speaker item causes 3 random geese to disperse from the game
             itemUsed = true;
             userSprite.increaseItemUsedCounter();
             int geeseToDisperse = Math.min(geeseDispered, activeGeese.size());
@@ -46,37 +48,27 @@ public class Item {
         }
     }
     
-    /** 
-     * @return Texture
-     */
+
     public Texture getTexture(){
         return itemTexture;
     }
 
-    /** 
-     * @return boolean
-     */
+
     public boolean  getItemActivationStatus(){
         return itemUsed;
     }
 
-    /** 
-     * @param varToSet
-     */
+
     public void setItemActivationStatus(boolean varToSet){
         itemUsed = varToSet;
     }
 
-    /** 
-     * @return int
-     */
+
     public int getGeeseDispered(){
         return geeseDispered;
     }
 
-    /** 
-     * @return Event
-     */
+
     public Event getLinkedEvent(){
         return linkedEvent;
     }

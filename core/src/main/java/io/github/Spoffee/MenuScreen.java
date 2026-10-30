@@ -57,26 +57,6 @@ public class MenuScreen implements Screen{
        
     }
 
-    private void input(){
-        //When the button is clicked trigger this line of code: 
-            //parent.changeScreen(GooseGame.APPLICATION);
-    }
-
-    private void logic(){
-    }
-
-    private void draw(){
-        //Place a button that when clicked starts the game
-    }
-
-    /** 
-     * @param width
-     * @param height
-     */
-    /** 
-     * @param width
-     * @param height
-     */
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);

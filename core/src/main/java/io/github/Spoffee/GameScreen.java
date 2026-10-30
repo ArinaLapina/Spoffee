@@ -7,29 +7,33 @@ import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class GameScreen implements Screen {
     private final GooseGame parent;
-    private SpriteBatch batch;
-    private Event event1;
-    private Event event2;
-    private Texture backgroundImg;
+    private SpriteBatch batch1;
+    private SpriteBatch batch2;
     private Player userSprite;
     private FitViewport viewport;
-    private ArrayList<Goose> activeGeese;
-    private Goose newGoose;
+    private FitViewport hudViewport;
+    private ArrayList<Goose> activeGeese = new ArrayList<>();;
     private BitmapFont font;
     private Timer timerForGame;
-
+    private ArrayList<Rectangle> collisonAreas = new ArrayList<Rectangle>();
+    private MapLayer collisionLayer;
+    private MapLayer eventsLayer;
+    private ArrayList<Event> activeEvents = new ArrayList<Event>();
     private TiledMap map;
     private OrthogonalTiledMapRenderer mapRenderer;
     private static final float UNIT_SCALE = 1f / 32f;
@@ -39,52 +43,81 @@ public class GameScreen implements Screen {
     }
 
     /**
-     * Initialises the map, user sprite, items, events, window and starting geese
-     *
-     * @param delta
+     * Initialises the game setup
+     * Set up of: Sprite batches, map -including areas that the player cannot go through, player,
+     * events, inventory, main game timer, font, geese
      */
     @Override
     public void show() {
-        // Creates the background, player and the window
-        batch = new SpriteBatch();
-        
-        backgroundImg = new Texture("background.png");
+        // Creates the batches for player, items and text to be displayed on
+        batch1 = new SpriteBatch();
+        batch2 = new SpriteBatch();
 
+        //Loads the map and sets it up
         map = new TmxMapLoader().load("maps/map.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(map, UNIT_SCALE);
 
+        //Gets the collision and event layers from the map
+        collisionLayer = map.getLayers().get("collisionLayer");
+        //eventsLayer = map.getLayers().get("events");
 
+        //Generates overlap rectangles for the out of bounds area 
+        for (MapObject object : collisionLayer.getObjects()) {
+            Rectangle tiledRectangle = ((RectangleMapObject) object).getRectangle();
+
+            Rectangle worldRectangle = new Rectangle(
+                        tiledRectangle.x * UNIT_SCALE,
+                        tiledRectangle.y * UNIT_SCALE,
+                        tiledRectangle.width * UNIT_SCALE,
+                        tiledRectangle.height * UNIT_SCALE);
+
+            collisonAreas.add(worldRectangle);
+            
+        }
+
+        //Generates overlap rectangles for the active events, and initialises all events as objects
+        /*for (MapObject object : eventsLayer.getObjects()) {
+            Rectangle newRect = ((RectangleMapObject) object).getRectangle();
+            Rectangle worldRectangle = new Rectangle(
+                        newRect.x * UNIT_SCALE,
+                        newRect.y * UNIT_SCALE,
+                        newRect.width * UNIT_SCALE,
+                        newRect.height * UNIT_SCALE);
+
+            String nameOfEvent = object.getProperties().get("eventName", String.class);
+            Event event = new Event(worldRectangle, nameOfEvent);
+            activeEvents.add(event);
+        }*/
+
+        //Initialises the player and 5 minute timer
         userSprite = new Player();
-        timerForGame = new Timer(3000000);
+        timerForGame = new Timer(300000);
 
-        viewport = new FitViewport(10, 7.5f);
+        //Sets up the camera and display for the screen
+        viewport = new FitViewport(20, 15f);
+        hudViewport = new FitViewport(20, 15f);
         DisplayMode displayMode = Gdx.graphics.getDisplayMode();
         Gdx.graphics.setWindowedMode(displayMode.width, displayMode.height);
 
+        //Creates the font with correct style to display text
         font = new BitmapFont();
         font.setUseIntegerPositions(false);
         font.getData().setScale((viewport.getWorldHeight() / Gdx.graphics.getHeight())*2f);
-        font.setColor(Color.BLACK);
+        font.setColor(Color.WHITE);
 
-
-        // Initialise 2 hidden events, and create rectangles
-        event1 = new Event(1, 1, 5, 5, "lecture");
-        event2 = new Event(1, 1, 5, 5, "lakeGeese");
 
         //Initialise 5 geese on the map with different starting locations
- 
-        float[][] geeseLocations = new float[][] {{1, 2, 0.5f, 0.5f}, 
-                                                {0, 4, 0.5f, 0.5f},
-                                                {1, 1, 0.5f, 0.5f},
-                                                {2, 2, 0.5f, 0.5f},
-                                                {3, 5, 0.5f, 0.5f},
-                                                {2.5f, 2.5f, 0.5f, 0.5f},
+        float[][] geeseLocations = new float[][] {{1, 2, 1f, 1f}, 
+                                                {0, 4, 1f, 1f},
+                                                {1, 1, 1f, 1f},
+                                                {2, 2, 1f, 1f},
+                                                {3, 5, 1f, 1f},
+                                                {2.5f, 2.5f, 1f, 1f},
                                             };
 
 
-        activeGeese = new ArrayList<>();
         for (int i = 0; i < 6; i++) {
-            newGoose = new Goose("goose.png", (int) geeseLocations[i][0], 
+            Goose newGoose = new Goose("goose.png", (int) geeseLocations[i][0], 
                                                         (int) geeseLocations[i][1],
                                                         geeseLocations[i][2], 
                                                         geeseLocations[i][3]);
@@ -94,6 +127,9 @@ public class GameScreen implements Screen {
 
     }
 
+    /**
+     * Changes the position of the camera, depending on the location of the player on the map
+     */
     private void updateCamera(){
         float mapWidth = map.getProperties().get("width", Integer.class)
             * map.getProperties().get("tilewidth", Integer.class)
@@ -122,9 +158,6 @@ public class GameScreen implements Screen {
         viewport.getCamera().update();
         }
 
-    /**
-     * @param delta
-     */
     @Override
     public void render(float delta) {
         input();
@@ -132,12 +165,8 @@ public class GameScreen implements Screen {
         draw();
     }
 
-    /**
-     * Checks the player's keyboard inputs each frame, and responds accordingly
-     * Controls movement, item use activation and updating players movement each
-     * movement
-     *
-     * @param delta
+    /** 
+     * Checks for player input for movement and item use
      */
     private void input() {
         // Triggers the player movement when the appropriate keys have been pressed
@@ -146,71 +175,49 @@ public class GameScreen implements Screen {
         // Checks if the key to trigger any items have been activated
         userSprite.getInventory().itemInput(userSprite, activeGeese);
 
-        // Add code to display pause / resume game
-
     }
 
 
     /**
      * Updates the game states and checks if anything needs changing after
      * proccessing input
-     * Controls how long an item is in for, if the player is at a map boundary, it a
-     * hidden event
-     * should be activated and the direction of geese movement once the player has
-     * moved
-     *
-     * Also will check if the win / loss conditions have been met and if so with
-     * change to the appropriate screen
-     *
-     * @param delta
+     * 
      */
     private void logic() {
-        // Checks if the user stops the player going out of bounds
-        userSprite.playerLogic(viewport, this);
+        // Stops the user going out of bounds, or through certain areas of the map
+        userSprite.playerLogic(collisonAreas);
 
+        // Controls the geese to always follow the player, and stay in the boundaries of the map
+        for (int i = 0; i < activeGeese.size(); i++) {
+            activeGeese.get(i).gooseMovement(userSprite, collisonAreas);
+        }
+
+        //Changes the camera position if neccessary after player movement
         updateCamera();
 
 
-        //Checks if the user is in an area that triggers a hidden event to occur
-        if (userSprite.getPlayerRectangle().overlaps(event1.getRectangle())){
-            if (event1.getEventActivationStatus() == false){
-                event1.setEventActivationStatus(true);
-                userSprite.increaseEventActiveCounter();
-                // Action for event 2
+        //Checks if any events need to be activated, and removes them from the active events so can't happen again
+        for (Event event : activeEvents){
+            if (userSprite.getPlayerRectangle().overlaps(event.getRectangle())){
+                event.triggerEvent(userSprite);
+                activeEvents.remove(event);
             }
         }
 
-        if (userSprite.getPlayerRectangle().overlaps(event2.getRectangle())){
-            if (event2.getEventActivationStatus() == false){
-                event2.setEventActivationStatus(true);
-                userSprite.increaseEventActiveCounter();
-                // Action for event 2
-            }
-        }
-
-        // Triggers the change in direction of each goose's direction of movement
-        // depending on position of the player
-        for (int i = 0; i < activeGeese.size(); i++) {
-            activeGeese.get(i).gooseMovement(userSprite);
-        }
-
+        //Checks if the timer has expired, and if so switches to the loss endgame screen
         if (timerForGame.toString().equals("0:00")){
             parent.changeScreen(GooseGame.LOSSGAME, userSprite);
         }
 
-        // Add a trigger for overlap with end goal area and when triggered:
-        // IF WIN: parent.changeScreen(GooseGame.WINGAME, userSprite);
-        // IF LOSS: parent.changeScreen(GooseGame.LOSSGAME, userSprite);
+        // Add a trigger for overlap with end goal area and add switch to win endgame scren
 
     }
 
     /**
-     * Clears the screen, then renders the background, user, items and geese onto
-     * the screen
-     *
-     * @param delta
+     * Displays everything onto the screen in the current positions
+     * Draws user, geese, items, timer and counters onto the screen
      */
-private void draw() {
+    private void draw() {
     ScreenUtils.clear(Color.BLACK);
 
     viewport.apply();
@@ -218,33 +225,37 @@ private void draw() {
     mapRenderer.setView((OrthographicCamera) viewport.getCamera());
     mapRenderer.render();
 
-    batch.setProjectionMatrix(viewport.getCamera().combined);
-    batch.begin();
+    batch1.setProjectionMatrix(viewport.getCamera().combined);            
+    batch1.begin();
 
-    userSprite.drawPlayer(batch);
+    userSprite.drawPlayer(batch1);
 
     for (Goose goose : activeGeese) {
         if (goose.getActiveStatus()) {
-            goose.getGoose().draw(batch);
+            goose.getGoose().draw(batch1);
         }
     }
+    batch1.end();
 
-    batch.end();
+    hudViewport.apply();
+    batch2.setProjectionMatrix(hudViewport.getCamera().combined);
+    batch2.begin();
+
+    userSprite.getInventory().drawItems(batch2, 20, 14.5f);
+    font.draw(batch2, "Timer" + timerForGame.toString(), 14.7f, 14.8f);
+    font.draw(batch2, "Items Used: " + userSprite.getItemUsedCounter(), 14.7f, 14.3f);
+    font.draw(batch2, "Events Activated: " + userSprite.getEventActiveCounter(), 14.7f, 13.8f);
+
+    batch2.end();
+
+    
 }
 
-//font.draw(batch, "Timer" + timerForGame.toString(), 6f, 4.5f);
-//font.draw(batch, "Items Used: " + userSprite.getItemUsedCounter(), 6f, 4.3f);
-//font.draw(batch, "Events Activated: " + userSprite.getEventActiveCounter(), 6f, 4.1f);
-
-    /**
-     * @param width
-     * @param height
-     */
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);
+        hudViewport.update(width, height, true);
     }
-
 
     public ArrayList<Goose> getActiveGeese(){
         return activeGeese;
@@ -264,7 +275,8 @@ private void draw() {
 
     @Override
     public void dispose() {
-        batch.dispose();
+        batch1.dispose();
+        batch2.dispose();
         font.dispose();
     }
 }

@@ -32,16 +32,16 @@ public class Inventory {
     }
 
     /** 
-     * If the item is in the player's inventory then it will be displayed on the screen
+     * If the item is in the player's inventory and hasn't been used then it will be displayed on the screen
      * @param batch
      */
-    public void drawItems(SpriteBatch batch){
+    public void drawItems(SpriteBatch batch, float widthMap, float heightMap){
         if (playerInventory.get(0).getItemActivationStatus() == false){
-            batch.draw(playerInventory.get(0).getTexture(),0f, 4.5f, 0.5f, 0.5f);
+            batch.draw(playerInventory.get(0).getTexture(),0f, heightMap-1, 1.5f, 1.5f);
         }
    
         if (playerInventory.get(1).getItemActivationStatus() == false){
-            batch.draw(playerInventory.get(1).getTexture(),0.5f, 4.5f, 0.5f, 0.5f);
+            batch.draw(playerInventory.get(1).getTexture(),1.5f, heightMap-1, 1.5f, 1.5f);
         }
     }
 
@@ -61,9 +61,6 @@ public class Inventory {
     }
 
 
-    /** 
-     * @return ArrayList<Item>
-     */
     public ArrayList<Item> getInventory(){
         return playerInventory;
     }

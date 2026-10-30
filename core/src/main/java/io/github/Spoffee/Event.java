@@ -4,71 +4,43 @@ import com.badlogic.gdx.math.Rectangle;
 
 public class Event {
     private boolean eventActivated = false;
-    private float xPos;
-    private float yPos;
-    private float width;
-    private float height;
     private Rectangle eventRectangle = new Rectangle();
     private String eventName;
 
-    public Event(int x, int y, int widthOfEvent, int heightOfEvent, String nameOfEvent){
-        xPos = x;
-        yPos = y;
-        width = widthOfEvent;
-        height = heightOfEvent;
-        eventRectangle.set(xPos, yPos, widthOfEvent, heightOfEvent);
+    public Event(Rectangle evRectangle, String nameOfEvent){
+        eventRectangle = evRectangle;
         eventName = nameOfEvent;
     }
 
-    /** Causes the event action to trigger
-     * @param delta
+    
+    /** Triggers the event action, increases the players event used counter and changes it's state to tru
+     * @param userSprite
      */
-    private void triggerEvent(){
+    public void triggerEvent( Player userSprite){
+        userSprite.increaseEventActiveCounter();
+        eventActivated = true;
+
+        if (eventName.equals("lecture")){
+
+        }
+
+        if (eventName.equals("lakeGeese")){
+            
+        }
     }
 
-    /** 
-     * @return Rectangle
-     */
+
     public Rectangle getRectangle(){
         return eventRectangle;
     }
 
-    /** 
-     * @return boolean
-     */
+
     public boolean getEventActivationStatus(){
         return eventActivated;
     }
 
+
     public void setEventActivationStatus(boolean newVal){
         eventActivated = newVal;
-    }
-
-    /** 
-     * @return float
-     */
-    public float getXpos(){
-        return xPos;
-    }
-
-    /** 
-     * @return float
-     */
-    public float getYpos(){
-        return yPos;
-    }
-
-    /** 
-     * @return float
-     */
-    public float getWidth(){
-        return width;
-    }
-
-    /** 
-     * @return float
-     */
-    public float getHeight(){
-        return height;
     }
 }

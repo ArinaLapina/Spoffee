@@ -1,13 +1,15 @@
 package io.github.Spoffee;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 
 
 public class Player {
@@ -26,17 +28,14 @@ public class Player {
         playerSprite.setPosition(0, 0);
     }
 
-    /** 
-     * @return Rectangle
-     */
-    public Rectangle getPlayerRectangle(){
-        return playerRectangle;
-    }
 
     public void drawPlayer(SpriteBatch batch){
         playerSprite.draw(batch);
     }
 
+    /** 
+     * Checks for player input for movement based of arrow / wasd keys, and changes direction
+     */
     public void playerInput(){
         float delta = Gdx.graphics.getDeltaTime();
 
@@ -58,65 +57,84 @@ public class Player {
         }
     }
 
-    public void playerLogic(FitViewport viewport, GameScreen display){
+    /** 
+     * Checks if the user in the out of bounds areas and if so stops them
+     */
+    public void playerLogic(ArrayList<Rectangle> collisionAreas){
+        //Stops the player going into certain areas of the map (such as buildings or lakes)
+        for (Rectangle solid : collisionAreas) {
+                Rectangle intersection = new Rectangle();
+                if (Intersector.intersectRectangles(playerRectangle, solid, intersection)) {
+                    if (intersection.getWidth() < intersection.getHeight()) {
+                        if (playerRectangle.getX() < solid.getX()) {
+                            playerSprite.setX(playerSprite.getX() - intersection.getWidth()); // Push left
+                        } else {
+                            playerSprite.setX(playerSprite.getX() + intersection.getWidth()); // Push right
+                        }
+                    } else {
+                        if (playerSprite.getY() < solid.getY()) {
+                            playerSprite.setY(playerSprite.getY() - intersection.getHeight()); // Push down
+                        } else {
+                            playerSprite.setY(playerSprite.getY() + intersection.getHeight()); // Push up
+                        }
+                    }
+                }
+            }
+
+        //Stops the player from going outside of the map by only allowing a certain range of X, Y values
         float worldWidth = 80f;
         float worldHeight = 50f;
 
-        
         playerSprite.setX(MathUtils.clamp(playerSprite.getX(), 0, worldWidth - playerSprite.getWidth()));
         playerSprite.setY(MathUtils.clamp(playerSprite.getY(), 0, worldHeight - playerSprite.getHeight()));
-        
-        
+        setRectangle();
     }
-    /** 
-     * @param delta
-     */
+
+    
+    public Rectangle getPlayerRectangle(){
+        return playerRectangle;
+    }
+
+
     public void setRectangle(){
         playerRectangle.set(playerSprite.getX(), playerSprite.getY(), playerSprite.getWidth(), playerSprite.getHeight());
     }
 
-    /** 
-     * @return float
-     */
+
     public float getSpeed(){
         return speed;
     }
 
-    /** 
-     * @param newSpeed
-     */
+
     public void setSpeed(float newSpeed){
         speed = newSpeed;
     }
 
-    /** 
-     * @return Sprite
-     */
+
     public Sprite getPSprite(){
         return playerSprite;
     }
 
-    /** 
-     * @return int
-     */
+
     public int getItemUsedCounter(){
         return itemsUsed;
     }
+
 
     public void increaseItemUsedCounter(){
         itemsUsed += 1;
     }
 
-    /** 
-     * @return int
-     */
+
     public int getEventActiveCounter(){
         return hiddenEventsActivated;
     }
 
+
     public void increaseEventActiveCounter(){
         hiddenEventsActivated += 1;
     }
+
 
     public Inventory getInventory(){
         return playerInventory;

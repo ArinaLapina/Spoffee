@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="60" height="38" tilewidth="32" tileheight="32" infinite="0" nextlayerid="2" nextobjectid="1">
+<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="60" height="38" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="3">
  <tileset firstgid="1" source="TileSet.tsx"/>
  <tileset firstgid="1045" source="mapGraphics.tsx"/>
  <layer id="1" name="Tile Layer 1" width="60" height="38">
@@ -44,4 +44,11 @@
 1578,1578,1578,1578,1579,1580,1542,1542,1542,1542,1542,1542,1542,1542,1542,1542,1542,1578,1578,1579,1578,1578,1578,1579,1580,1579,1580,1580,1580,1580,1580,1580,1578,1578,1579,1580,1580,1580,1580,1580,1580,1580,1580,1580,1580,1580,1580,1580,1580,1578,1579,1580,1580,1580,1580,1580,1580,1581,1581,1581
 </data>
  </layer>
+ <objectgroup id="2" name="collisionLayer">
+  <object id="1" x="-7.18787" y="700.204" width="301.011" height="325.509">
+   <properties>
+    <property name="collision = true" type="bool" value="true"/>
+   </properties>
+  </object>
+ </objectgroup>
 </map>

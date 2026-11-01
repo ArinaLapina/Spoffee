@@ -109,7 +109,6 @@ public class GameScreen implements Screen {
         //Initialise 3 to 6 geese on the map with different starting locations
         //(within a 6 x 2 area over the water)
         for (int i = 0; i < (int) (Math.random() * 4) + 3; i++) {
-            System.out.println(i);
             Goose newGoose = new Goose("goose.png", (int) (Math.random() * 7), 
                                                     (int) (Math.random() * 3),
                                                     1f, 1f);

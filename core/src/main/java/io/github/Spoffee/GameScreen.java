@@ -90,7 +90,7 @@ public class GameScreen implements Screen {
         }*/
 
         //Initialises the player and 5 minute timer
-        userSprite = new Player();
+        userSprite = new Player(4,5);
         timerForGame = new Timer(300000);
 
         //Sets up the camera and display for the screen
@@ -106,22 +106,13 @@ public class GameScreen implements Screen {
         font.setColor(Color.WHITE);
 
 
-        //Initialise 5 geese on the map with different starting locations
-        float[][] geeseLocations = new float[][] {{1, 2, 1f, 1f}, 
-                                                {0, 4, 1f, 1f},
-                                                {1, 1, 1f, 1f},
-                                                {2, 2, 1f, 1f},
-                                                {3, 5, 1f, 1f},
-                                                {2.5f, 2.5f, 1f, 1f},
-                                            };
-
-
-        for (int i = 0; i < 6; i++) {
-            Goose newGoose = new Goose("goose.png", (int) geeseLocations[i][0], 
-                                                        (int) geeseLocations[i][1],
-                                                        geeseLocations[i][2], 
-                                                        geeseLocations[i][3]);
-            
+        //Initialise 3 to 6 geese on the map with different starting locations
+        //(within a 6 x 2 area over the water)
+        for (int i = 0; i < (int) (Math.random() * 4) + 3; i++) {
+            System.out.println(i);
+            Goose newGoose = new Goose("goose.png", (int) (Math.random() * 7), 
+                                                    (int) (Math.random() * 3),
+                                                    1f, 1f);
             activeGeese.add(newGoose);
         }
 

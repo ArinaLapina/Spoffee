@@ -21,11 +21,11 @@ public class Player {
     private Inventory playerInventory = new Inventory();
     private Rectangle playerRectangle = new Rectangle(0, 0, 0.75f, 1f);
 
-    public Player(){
+    public Player(int xPos, int yPos){
         spriteImage = new Texture("person.png");
         playerSprite = new Sprite(spriteImage);
         playerSprite.setSize(0.75f, 1f);
-        playerSprite.setPosition(0, 0);
+        playerSprite.setPosition(xPos, yPos);
     }
 
 

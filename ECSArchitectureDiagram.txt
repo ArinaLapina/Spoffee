@@ -5,6 +5,7 @@ Events *-- Size
 Events *-- Effect
 Events *-- Activation
 Player *-- Position
+Player *-- Stats
 Player *-- Size
 Player *-- Speed
 Player *-- Sprite
@@ -14,6 +15,7 @@ Goose *-- Size
 Goose *-- Position 
 Goose *-- Sprite
 Goose *-- Direction
+Goose *-- Dispersal
 Item *-- Effect
 Item *-- Activation
 
@@ -21,6 +23,12 @@ Item *-- Activation
 Class Inventory{
     list items
     int size
+}
+
+Class Stats{
+   int energy
+   int itemsUsed
+   int hiddenEventsTriggered
 }
 
 Class Position{
@@ -46,6 +54,11 @@ Class Size{
 
 Class Speed{
    float speed
+}
+
+Class Dispersal{
+   bool Dispersed
+   bool disperse()
 }
 
 Class Effect{

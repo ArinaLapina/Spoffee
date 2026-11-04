@@ -21,7 +21,7 @@ public class Player {
     private Inventory playerInventory = new Inventory();
     private Rectangle playerRectangle = new Rectangle(4, 5, 1.5f, 2f);
 
-    public Player(){
+    public Player(int xPos, int yPos){
         spriteImage = new Texture("person.png");
         playerSprite = new Sprite(spriteImage);
         playerSprite.setSize(1.5f, 2f);

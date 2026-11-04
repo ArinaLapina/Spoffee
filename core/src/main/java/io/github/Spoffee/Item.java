@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.Texture;
 
-public class Item {
+public class Item{
     private Texture itemTexture;
     public String itemName;
     private boolean itemUsed = false;
@@ -25,6 +25,7 @@ public class Item {
     public void useItem(Item itemToUse, Player userSprite, ArrayList<Goose> activeGeese){
         if ("energyDrink".equals(itemName) && itemToUse.getItemActivationStatus() == false){
             //The energy drink item increases the players speed
+            timerForItem = new Timer(10000);
             itemUsed = true;
             userSprite.increaseItemUsedCounter();
             userSprite.setSpeed(1f);
@@ -71,5 +72,9 @@ public class Item {
 
     public Event getLinkedEvent(){
         return linkedEvent;
+    }
+
+    public Timer getTimer(){
+        return timerForItem;
     }
 }

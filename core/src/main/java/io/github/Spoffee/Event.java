@@ -5,11 +5,9 @@ import com.badlogic.gdx.math.Rectangle;
 public class Event {
     private boolean eventActivated = false;
     private Rectangle eventRectangle = new Rectangle();
-    private String eventName;
 
-    public Event(Rectangle evRectangle, String nameOfEvent){
+    public Event(Rectangle evRectangle){
         eventRectangle = evRectangle;
-        eventName = nameOfEvent;
     }
 
     
@@ -19,14 +17,6 @@ public class Event {
     public void triggerEvent( Player userSprite){
         userSprite.increaseEventActiveCounter();
         eventActivated = true;
-
-        if (eventName.equals("lecture")){
-
-        }
-
-        if (eventName.equals("lakeGeese")){
-            
-        }
     }
 
 

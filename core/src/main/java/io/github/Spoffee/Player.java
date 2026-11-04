@@ -19,13 +19,13 @@ public class Player {
     private int hiddenEventsActivated = 0;
     private Texture spriteImage;
     private Inventory playerInventory = new Inventory();
-    private Rectangle playerRectangle = new Rectangle(0, 0, 0.75f, 1f);
+    private Rectangle playerRectangle = new Rectangle(4, 5, 1.5f, 2f);
 
     public Player(){
         spriteImage = new Texture("person.png");
         playerSprite = new Sprite(spriteImage);
-        playerSprite.setSize(0.75f, 1f);
-        playerSprite.setPosition(0, 0);
+        playerSprite.setSize(1.5f, 2f);
+        playerSprite.setPosition(4, 5);
     }
 
 

@@ -16,7 +16,7 @@ public class Goose {
     private Vector2 playerPos;
     private Vector2 direction;
     private boolean active = true;
-    private float speed = 1f;
+    private float speed = 1.5f;
     
 
     public Goose(String filePath, int xPos, int yPos, float width, float height){
@@ -32,15 +32,17 @@ public class Goose {
      * @param playerSprite - the sprite object of the player, so location can be found
      * @param collisionAreas - list of objects for out of bound areas
      */
-    public void gooseMovement(Player player, ArrayList<Rectangle> collisionAreas){
+    public void gooseMovement(Player player, ArrayList<Rectangle> collisionAreas, int offsetVal){
         //Changes the goose direction, so that they follow the player
         Vector2 goosePos = new Vector2(gooseSprite.getX(), gooseSprite.getY());
         Vector2 playerPos = new Vector2(player.getPSprite().getX(), player.getPSprite().getY());
         Vector2 direction = new Vector2();
         float delta = Gdx.graphics.getDeltaTime();
 
-        direction.x = (playerPos.x + 40) - (goosePos.x + 40);
-        direction.y = (playerPos.y + 40) - (goosePos.y + 40);
+
+        //Work out how to use the offSet value to get the goose in slightly different positions
+        direction.x =(playerPos.x + 40) - (goosePos.x + 40);
+        direction.y =(playerPos.y + 40) - (goosePos.y + 40);
 
         gooseSprite.translateX(speed * delta * direction.x*0.1f);
         gooseSprite.translateY(speed * delta * direction.y*0.1f);

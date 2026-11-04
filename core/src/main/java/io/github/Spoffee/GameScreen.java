@@ -1,6 +1,7 @@
 package io.github.Spoffee;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
@@ -30,13 +31,16 @@ public class GameScreen implements Screen {
     private ArrayList<Goose> activeGeese = new ArrayList<>();;
     private BitmapFont font;
     private Timer timerForGame;
-    private ArrayList<Rectangle> collisonAreas = new ArrayList<Rectangle>();
-    private MapLayer collisionLayer;
+    private MapLayer playerCollisionLayer;
+    private ArrayList<Rectangle> playerCollisonAreas = new ArrayList<Rectangle>();
+    private MapLayer gooseCollisionLayer;
+    private ArrayList<Rectangle> gooseCollisonAreas = new ArrayList<Rectangle>();
     private MapLayer eventsLayer;
-    private ArrayList<Event> activeEvents = new ArrayList<Event>();
+    private ArrayList<EventParentClass> activeEvents = new ArrayList<EventParentClass>();
     private TiledMap map;
     private OrthogonalTiledMapRenderer mapRenderer;
     private static final float UNIT_SCALE = 1f / 32f;
+    private Rectangle endGoalRectangle;
 
     public GameScreen(GooseGame parentClass) {
         parent = parentClass;
@@ -54,15 +58,17 @@ public class GameScreen implements Screen {
         batch2 = new SpriteBatch();
 
         //Loads the map and sets it up
-        map = new TmxMapLoader().load("maps/map.tmx");
+        map = new TmxMapLoader().load("MapGraphics/map2.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(map, UNIT_SCALE);
 
-        //Gets the collision and event layers from the map
-        collisionLayer = map.getLayers().get("collisionLayer");
-        //eventsLayer = map.getLayers().get("events");
 
-        //Generates overlap rectangles for the out of bounds area 
-        for (MapObject object : collisionLayer.getObjects()) {
+        //Gets the collision and event layers from the map
+        playerCollisionLayer = map.getLayers().get("playerCollisionLayer");
+        gooseCollisionLayer = map.getLayers().get("gooseCollisionLayer");
+        eventsLayer = map.getLayers().get("eventLayer");
+
+        //Generates overlap rectangles for the out of bounds area for the player
+        for (MapObject object : playerCollisionLayer.getObjects()) {
             Rectangle tiledRectangle = ((RectangleMapObject) object).getRectangle();
 
             Rectangle worldRectangle = new Rectangle(
@@ -71,12 +77,26 @@ public class GameScreen implements Screen {
                         tiledRectangle.width * UNIT_SCALE,
                         tiledRectangle.height * UNIT_SCALE);
 
-            collisonAreas.add(worldRectangle);
+            playerCollisonAreas.add(worldRectangle);
+            
+        }
+
+        //Generates overlap rectangles for the out of bounds area for the geese
+        for (MapObject object : gooseCollisionLayer.getObjects()) {
+            Rectangle tiledRectangle = ((RectangleMapObject) object).getRectangle();
+
+            Rectangle worldRectangle = new Rectangle(
+                        tiledRectangle.x * UNIT_SCALE,
+                        tiledRectangle.y * UNIT_SCALE,
+                        tiledRectangle.width * UNIT_SCALE,
+                        tiledRectangle.height * UNIT_SCALE);
+
+            gooseCollisonAreas.add(worldRectangle);
             
         }
 
         //Generates overlap rectangles for the active events, and initialises all events as objects
-        /*for (MapObject object : eventsLayer.getObjects()) {
+        for (MapObject object : eventsLayer.getObjects()) {
             Rectangle newRect = ((RectangleMapObject) object).getRectangle();
             Rectangle worldRectangle = new Rectangle(
                         newRect.x * UNIT_SCALE,
@@ -84,10 +104,24 @@ public class GameScreen implements Screen {
                         newRect.width * UNIT_SCALE,
                         newRect.height * UNIT_SCALE);
 
-            String nameOfEvent = object.getProperties().get("eventName", String.class);
-            Event event = new Event(worldRectangle, nameOfEvent);
+            Integer eventID = object.getProperties().get("eventID", Integer.class);
+            EventParentClass event;
+            
+            switch (eventID) {
+                case 1:
+                    event = new LakeGeese(worldRectangle);
+                    break;
+                case 2:
+                    event = new Lecture(worldRectangle);
+                    break;
+                case 0:
+                    endGoalRectangle = worldRectangle;
+                default:
+                    continue;
+            }
+            
             activeEvents.add(event);
-        }*/
+        }
 
         //Initialises the player and 5 minute timer
         userSprite = new Player();
@@ -107,12 +141,12 @@ public class GameScreen implements Screen {
 
 
         //Initialise 5 geese on the map with different starting locations
-        float[][] geeseLocations = new float[][] {{1, 2, 1f, 1f}, 
-                                                {0, 4, 1f, 1f},
-                                                {1, 1, 1f, 1f},
-                                                {2, 2, 1f, 1f},
-                                                {3, 5, 1f, 1f},
-                                                {2.5f, 2.5f, 1f, 1f},
+        float[][] geeseLocations = new float[][] {{0, 2, 1f, 1f}, 
+                                                {2, 1, 1f, 1f},
+                                                {3, 3, 1f, 1f},
+                                                {3, 2, 1f, 1f},
+                                                {4, 0, 1f, 1f},
+                                                {5f, 2.5f, 1f, 1f},
                                             };
 
 
@@ -158,6 +192,7 @@ public class GameScreen implements Screen {
         viewport.getCamera().update();
         }
 
+    
     @Override
     public void render(float delta) {
         input();
@@ -185,22 +220,31 @@ public class GameScreen implements Screen {
      */
     private void logic() {
         // Stops the user going out of bounds, or through certain areas of the map
-        userSprite.playerLogic(collisonAreas);
+        userSprite.playerLogic(playerCollisonAreas);
+
+        //Checks if any item timers have expired and if so reverts the item power
+        userSprite.getInventory().itemLogic(userSprite);
 
         // Controls the geese to always follow the player, and stay in the boundaries of the map
         for (int i = 0; i < activeGeese.size(); i++) {
-            activeGeese.get(i).gooseMovement(userSprite, collisonAreas);
+            activeGeese.get(i).gooseMovement(userSprite, gooseCollisonAreas, i);
         }
 
         //Changes the camera position if neccessary after player movement
         updateCamera();
 
 
-        //Checks if any events need to be activated, and removes them from the active events so can't happen again
-        for (Event event : activeEvents){
+        //Checks if any events need to be activated and runs their ongoing logic.
+        //The activation flag prevents an event from being triggered more than once.
+        Iterator<EventParentClass> eventIterator = activeEvents.iterator();
+        while (eventIterator.hasNext()){
+            EventParentClass event = eventIterator.next();
             if (userSprite.getPlayerRectangle().overlaps(event.getRectangle())){
-                event.triggerEvent(userSprite);
-                activeEvents.remove(event);
+                event.activateEvent(userSprite, activeGeese);
+            }
+
+            if (event.getEventActivationStatus()){
+                event.eventLogic(userSprite);
             }
         }
 
@@ -209,7 +253,11 @@ public class GameScreen implements Screen {
             parent.changeScreen(GooseGame.LOSSGAME, userSprite);
         }
 
-        // Add a trigger for overlap with end goal area and add switch to win endgame scren
+        // Add a trigger for overlap with end goal area (from Events Layer) and switch to win endgame screen
+        if (userSprite.getPlayerRectangle().overlaps(endGoalRectangle)){
+            parent.changeScreen(GooseGame.WINGAME, userSprite);
+        }
+
 
     }
 
@@ -218,35 +266,35 @@ public class GameScreen implements Screen {
      * Draws user, geese, items, timer and counters onto the screen
      */
     private void draw() {
-    ScreenUtils.clear(Color.BLACK);
+        ScreenUtils.clear(Color.BLACK);
 
-    viewport.apply();
+        viewport.apply();
 
-    mapRenderer.setView((OrthographicCamera) viewport.getCamera());
-    mapRenderer.render();
+        mapRenderer.setView((OrthographicCamera) viewport.getCamera());
+        mapRenderer.render();
 
-    batch1.setProjectionMatrix(viewport.getCamera().combined);            
-    batch1.begin();
+        batch1.setProjectionMatrix(viewport.getCamera().combined);            
+        batch1.begin();
 
-    userSprite.drawPlayer(batch1);
+        userSprite.drawPlayer(batch1);
 
-    for (Goose goose : activeGeese) {
-        if (goose.getActiveStatus()) {
-            goose.getGoose().draw(batch1);
+        for (Goose goose : activeGeese) {
+            if (goose.getActiveStatus()) {
+                goose.getGoose().draw(batch1);
+            }
         }
-    }
-    batch1.end();
+        batch1.end();
 
-    hudViewport.apply();
-    batch2.setProjectionMatrix(hudViewport.getCamera().combined);
-    batch2.begin();
+        hudViewport.apply();
+        batch2.setProjectionMatrix(hudViewport.getCamera().combined);
+        batch2.begin();
 
-    userSprite.getInventory().drawItems(batch2, 20, 14.5f);
-    font.draw(batch2, "Timer" + timerForGame.toString(), 14.7f, 14.8f);
-    font.draw(batch2, "Items Used: " + userSprite.getItemUsedCounter(), 14.7f, 14.3f);
-    font.draw(batch2, "Events Activated: " + userSprite.getEventActiveCounter(), 14.7f, 13.8f);
+        userSprite.getInventory().drawItems(batch2, 20, 14.5f);
+        font.draw(batch2, "Timer" + timerForGame.toString(), 14.7f, 14.8f);
+        font.draw(batch2, "Items Used: " + userSprite.getItemUsedCounter(), 14.7f, 14.3f);
+        font.draw(batch2, "Events Activated: " + userSprite.getEventActiveCounter(), 14.7f, 13.8f);
 
-    batch2.end();
+        batch2.end();
 
     
 }

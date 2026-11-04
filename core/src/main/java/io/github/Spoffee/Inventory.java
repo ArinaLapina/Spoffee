@@ -6,13 +6,13 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Inventory {
-    private ArrayList<Item> allItems = new ArrayList<>();
-    private ArrayList<Item> playerInventory = new ArrayList<>();
+    private ArrayList<ItemParentClass> allItems = new ArrayList<>();
+    private ArrayList<ItemParentClass> playerInventory = new ArrayList<>();
     
     public Inventory(){
         //Create objects of each item that could be used by a player
-        Item item1 = new Item("energydrink.png", 0, null, "energyDrink");
-        Item item2 = new Item("foghorn.png", 3, null, "speaker");
+        EnergyDrink item1 = new EnergyDrink("energydrink.png", 0, null);
+        Foghorn item2 = new Foghorn("foghorn.png", 3, null);
 
         allItems.add(item1);
         allItems.add(item2);
@@ -52,16 +52,23 @@ public class Inventory {
      */
     public void  itemInput(Player userSprite, ArrayList<Goose> activeGeese){
         if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
-            playerInventory.get(0).useItem(playerInventory.get(0), userSprite, activeGeese);
+            playerInventory.get(0).useItem(userSprite, activeGeese);
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2)) {
-            playerInventory.get(1).useItem(playerInventory.get(1), userSprite, activeGeese);            // Code for activation event2
+            playerInventory.get(1).useItem(userSprite, activeGeese);
         }
     }
 
+    public void itemLogic(Player userSprite){
+        for (int i = 0; i < allItems.size(); i++) {
+            if (allItems.get(i).getItemActivationStatus()){
+                allItems.get(i).itemLogic(userSprite);
+            }
+        }
+    }
 
-    public ArrayList<Item> getInventory(){
+    public ArrayList<ItemParentClass> getInventory(){
         return playerInventory;
     }
 

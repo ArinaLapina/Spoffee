@@ -58,7 +58,7 @@ public class GameScreen implements Screen {
         batch2 = new SpriteBatch();
 
         //Loads the map and sets it up
-        map = new TmxMapLoader().load("MapGraphics/map2.tmx");
+        map = new TmxMapLoader().load("MapAssests/map.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(map, UNIT_SCALE);
 
 
@@ -143,9 +143,9 @@ public class GameScreen implements Screen {
         //Initialise 3 to 6 geese on the map with different starting locations
         //(within a 6 x 2 area over the water)
         for (int i = 0; i < (int) (Math.random() * 4) + 3; i++) {
-            Goose newGoose = new Goose("goose.png", (int) (Math.random() * 7), 
-                                                    (int) (Math.random() * 3),
-                                                    1f, 1f);
+            Goose newGoose = new Goose("gooseSprite.png", (int) (Math.random() * 7) , 
+                                                    (int) (Math.random() * 3) + 33,
+                                                    3f, 2f);
             activeGeese.add(newGoose);
         }
 
@@ -179,6 +179,8 @@ public class GameScreen implements Screen {
         );
 
         viewport.getCamera().position.set(cameraX, cameraY, 0);
+        
+
         viewport.getCamera().update();
         }
 

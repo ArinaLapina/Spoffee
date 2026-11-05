@@ -8,10 +8,10 @@ public abstract class ItemParentClass{
     private Texture itemTexture;
     private boolean itemUsed = false;
     private int geeseDispered;
-    private Event linkedEvent;
+    private EventOLD linkedEvent;
     private Timer timerForItem;
 
-    public ItemParentClass(String filePath, int geeseDisperalNum, Event eventLinked){
+    public ItemParentClass(String filePath, int geeseDisperalNum, EventOLD eventLinked){
         itemTexture = new Texture(filePath);
         geeseDispered = geeseDisperalNum;
         linkedEvent = eventLinked;
@@ -33,7 +33,7 @@ public abstract class ItemParentClass{
         return geeseDispered;
     }
 
-    public Event getLinkedEvent(){
+    public EventOLD getLinkedEvent(){
         return linkedEvent;
     }
     
@@ -57,7 +57,7 @@ public abstract class ItemParentClass{
 }
 
 class EnergyDrink extends ItemParentClass{
-    public EnergyDrink(String filePath, int geeseDisperalNum, Event eventLinked){
+    public EnergyDrink(String filePath, int geeseDisperalNum, EventOLD eventLinked){
         super(filePath, geeseDisperalNum, eventLinked);
     }
 
@@ -82,7 +82,7 @@ class EnergyDrink extends ItemParentClass{
 }
 
 class Foghorn extends ItemParentClass{
-    public Foghorn(String filePath, int geeseDisperalNum, Event eventLinked){
+    public Foghorn(String filePath, int geeseDisperalNum, EventOLD eventLinked){
         super(filePath, geeseDisperalNum, eventLinked);
     }
 

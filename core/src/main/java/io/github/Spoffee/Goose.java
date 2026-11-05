@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
@@ -37,13 +38,18 @@ public class Goose {
         Vector2 goosePos = new Vector2(gooseSprite.getX(), gooseSprite.getY());
         Vector2 playerPos = new Vector2(player.getPSprite().getX(), player.getPSprite().getY());
         Vector2 direction = new Vector2();
+
         float delta = Gdx.graphics.getDeltaTime();
 
-
         //Work out how to use the offSet value to get the goose in slightly different positions
-        direction.x =(playerPos.x + 40) - (goosePos.x + 40);
-        direction.y =(playerPos.y + 40) - (goosePos.y + 40);
+        float angle = offsetVal * (MathUtils.PI2 / 6f);
+        float followDistance = 2.25f;
 
+        float targetX = playerPos.x + MathUtils.cos(angle) * followDistance;
+        float targetY = playerPos.y + MathUtils.sin(angle) * followDistance;
+
+        direction.x = targetX - goosePos.x;
+        direction.y = targetY - goosePos.y;
         gooseSprite.translateX(speed * delta * direction.x*0.1f);
         gooseSprite.translateY(speed * delta * direction.y*0.1f);
 

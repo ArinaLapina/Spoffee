@@ -4,15 +4,15 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.Texture;
 
-public class Item{
+public class ItemOLD{
     private Texture itemTexture;
     public String itemName;
     private boolean itemUsed = false;
     private int geeseDispered;
-    private Event linkedEvent;
+    private EventOLD linkedEvent;
     private Timer timerForItem;
 
-    public Item(String filePath, int geeseDisperalNum, Event eventLinked, String itemNameInput){
+    public ItemOLD(String filePath, int geeseDisperalNum, EventOLD eventLinked, String itemNameInput){
         itemTexture = new Texture(filePath);
         geeseDispered = geeseDisperalNum;
         linkedEvent = eventLinked;
@@ -22,7 +22,7 @@ public class Item{
     /** Checks if the relavent item has been used and if not triggers it's action
      * @param delta
      */
-    public void useItem(Item itemToUse, Player userSprite, ArrayList<Goose> activeGeese){
+    public void useItem(ItemOLD itemToUse, Player userSprite, ArrayList<Goose> activeGeese){
         if ("energyDrink".equals(itemName) && itemToUse.getItemActivationStatus() == false){
             //The energy drink item increases the players speed
             timerForItem = new Timer(10000);
@@ -70,7 +70,7 @@ public class Item{
     }
 
 
-    public Event getLinkedEvent(){
+    public EventOLD getLinkedEvent(){
         return linkedEvent;
     }
 

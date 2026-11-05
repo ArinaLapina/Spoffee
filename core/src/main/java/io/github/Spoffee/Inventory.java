@@ -11,8 +11,8 @@ public class Inventory {
     
     public Inventory(){
         //Create objects of each item that could be used by a player
-        EnergyDrink item1 = new EnergyDrink("energydrink.png", 0, null);
-        Foghorn item2 = new Foghorn("foghorn.png", 3, null);
+        EnergyDrink item1 = new EnergyDrink("coffeeItem.png", 0, null);
+        Foghorn item2 = new Foghorn("foghornItem.png", 3, null);
 
         allItems.add(item1);
         allItems.add(item2);
@@ -37,11 +37,11 @@ public class Inventory {
      */
     public void drawItems(SpriteBatch batch, float widthMap, float heightMap){
         if (playerInventory.get(0).getItemActivationStatus() == false){
-            batch.draw(playerInventory.get(0).getTexture(),0f, heightMap-1, 1.5f, 1.5f);
+            batch.draw(playerInventory.get(0).getTexture(),0f, heightMap-1, 1.75f, 1.5f);
         }
    
         if (playerInventory.get(1).getItemActivationStatus() == false){
-            batch.draw(playerInventory.get(1).getTexture(),1.5f, heightMap-1, 1.5f, 1.5f);
+            batch.draw(playerInventory.get(1).getTexture(),2f, heightMap-1, 1.75f, 1.5f);
         }
     }
 

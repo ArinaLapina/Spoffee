@@ -2,11 +2,11 @@ package io.github.Spoffee;
 
 import com.badlogic.gdx.math.Rectangle;
 
-public class Event {
+public class EventOLD {
     private boolean eventActivated = false;
     private Rectangle eventRectangle = new Rectangle();
 
-    public Event(Rectangle evRectangle){
+    public EventOLD(Rectangle evRectangle){
         eventRectangle = evRectangle;
     }
 

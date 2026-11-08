@@ -17,9 +17,11 @@ public abstract class EventParentClass{
         return eventRectangle;
     }
 
+
     public boolean getEventActivationStatus(){
         return eventActivated;
     }
+
 
     public void setEventActivationStatus(boolean newVal){
         eventActivated = newVal;
@@ -30,12 +32,18 @@ public abstract class EventParentClass{
         userSprite.increaseEventActiveCounter();
     }
 
+
     protected void setTimer(Timer timer){
         eventTimer = timer;
     }
 
+    
     public Timer getTimer(){
         return eventTimer;
+    }
+
+    public String getDisplayText(){
+        return null;
     }
     
     public abstract void activateEvent(Player userSprite, ArrayList<Goose> activeGeese);
@@ -45,28 +53,55 @@ public abstract class EventParentClass{
 }
 
 class Lecture extends EventParentClass{
+    private boolean speedRestored = false;
+
     public Lecture(Rectangle eventRectangle){
         super(eventRectangle);
     }
 
+    /** 
+     * Causes the activation of the Lecture event, so the playing stops moving and starts a 7.5s timer
+     * @param userSprite
+     * @param activeGeese
+     */
     @Override
     public void activateEvent(Player userSprite, ArrayList<Goose> activeGeese){
         if (getEventActivationStatus()){
             return;
         }
         if (this.getTimer() == null){
-            setTimer(new Timer(10000));
+            setTimer(new Timer(7500));
         }
+        markAsUsed(userSprite);
+        speedRestored = false;
         userSprite.setSpeed(0f);
     }
 
+    /** 
+     * Checks the value of the timer and if it's reached 0, sets the speed back to normal
+     * Changes the variable speedRestored so other things affecting speed can be used after this event
+     * @param userSprite
+=     */
     @Override
     public void eventLogic(Player userSprite) {
-        if (this.getTimer().toString().equals("0:00")){
-            markAsUsed(userSprite);
+        if (!speedRestored && this.getTimer().toString().equals("0:00")){
             userSprite.setSpeed(0.5f);
+            speedRestored = true;
         }
-        
+    }
+
+    /** 
+     * For the duration of the active event it returns text to display on the screen
+     * @return textToDispaly
+     */
+
+    @Override
+    public String getDisplayText(){
+        if (getTimer() != null && !speedRestored
+                && !getTimer().toString().equals("0:00")){
+            return "You've been stopped by a lecture";
+        }
+        return null;
     }
 }
 
@@ -75,6 +110,11 @@ class LakeGeese extends EventParentClass{
         super(eventRectangle);
     }
 
+    /** 
+     * Causes the activation of the event by the lake, meaning that 3 to 6 more geese appear from the lake
+     * @param userSprite
+     * @param activeGeese
+     */
     @Override
     public void activateEvent(Player userSprite, ArrayList<Goose> activeGeese){
         if (getEventActivationStatus()){
@@ -83,23 +123,12 @@ class LakeGeese extends EventParentClass{
 
         markAsUsed(userSprite);
 
-        //Change locations of added geese so they are from the lake edge
+        //Adds 3 to 6 geese on the map in a 6x2 area
 
-        float[][] geeseLocations = new float[][] {{0, 2, 1f, 1f}, 
-                                                {2, 1, 1f, 1f},
-                                                {3, 3, 1f, 1f},
-                                                {3, 2, 1f, 1f},
-                                                {4, 0, 1f, 1f},
-                                                {5f, 2.5f, 1f, 1f},
-                                            };
-
-
-        for (int i = 0; i < 6; i++) {
-            Goose newGoose = new Goose("goose.png", (int) geeseLocations[i][0], 
-                                                        (int) geeseLocations[i][1],
-                                                        geeseLocations[i][2], 
-                                                        geeseLocations[i][3]);
-            
+        for (int i = 0; i < (int) (Math.random() * 4) + 3; i++) {
+            Goose newGoose = new Goose("gooseSprite.png", ((int) userSprite.getPSprite().getX()-(int) (Math.random() * 7)-10) , 
+                                                    ((int) userSprite.getPSprite().getY()-(int) (Math.random() * 3)),
+                                                    3f, 2f);
             activeGeese.add(newGoose);
         }
     }

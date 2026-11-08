@@ -30,7 +30,7 @@ public class MenuScreen implements Screen{
 
         batch = new SpriteBatch();
         
-        backgroundImage = new Texture("MenuScreenBackground.png");
+        backgroundImage = new Texture("MenuScreenImage.png");
 
     }
 

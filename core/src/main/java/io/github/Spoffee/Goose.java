@@ -91,4 +91,8 @@ public class Goose {
         active = false;
     }
 
+    public Rectangle getGooseRectangle(){
+        return gooseRectangle;
+    }
+
 }

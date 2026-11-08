@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -18,6 +19,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -25,6 +27,7 @@ public class GameScreen implements Screen {
     private final GooseGame parent;
     private SpriteBatch batch1;
     private SpriteBatch batch2;
+    private ShapeRenderer shapeRenderer;
     private Player userSprite;
     private FitViewport viewport;
     private FitViewport hudViewport;
@@ -41,6 +44,7 @@ public class GameScreen implements Screen {
     private OrthogonalTiledMapRenderer mapRenderer;
     private static final float UNIT_SCALE = 1f / 32f;
     private Rectangle endGoalRectangle;
+    private boolean activateWin;
 
     public GameScreen(GooseGame parentClass) {
         parent = parentClass;
@@ -56,6 +60,7 @@ public class GameScreen implements Screen {
         // Creates the batches for player, items and text to be displayed on
         batch1 = new SpriteBatch();
         batch2 = new SpriteBatch();
+        shapeRenderer = new ShapeRenderer();
 
         //Loads the map and sets it up
         map = new TmxMapLoader().load("MapAssests/map.tmx");
@@ -108,14 +113,16 @@ public class GameScreen implements Screen {
             EventParentClass event;
             
             switch (eventID) {
-                case 1:
-                    event = new LakeGeese(worldRectangle);
-                    break;
-                case 2:
-                    event = new Lecture(worldRectangle);
-                    break;
                 case 0:
                     endGoalRectangle = worldRectangle;
+
+                case 1:
+                    event = new Lecture(worldRectangle);
+                    break;
+                case 2:
+                    event = new LakeGeese(worldRectangle);
+                    break;
+                
                 default:
                     continue;
             }
@@ -247,7 +254,20 @@ public class GameScreen implements Screen {
 
         // Add a trigger for overlap with end goal area (from Events Layer) and switch to win endgame screen
         if (userSprite.getPlayerRectangle().overlaps(endGoalRectangle)){
-            parent.changeScreen(GooseGame.WINGAME, userSprite);
+            Vector2 playerPos = new Vector2(userSprite.getPSprite().getX(), userSprite.getPSprite().getY());
+
+            for (Goose gooseSprite : activeGeese){
+                Vector2 goosePos = new Vector2(gooseSprite.getGoose().getX(), gooseSprite.getGoose().getY());
+                if (goosePos.dst2(playerPos.x, playerPos.y) < 5){
+                    activateWin = false;
+                }
+
+            }
+
+            if (activateWin){
+                parent.changeScreen(GooseGame.WINGAME, userSprite);
+            }
+            
         }
 
 
@@ -285,6 +305,13 @@ public class GameScreen implements Screen {
         font.draw(batch2, "Timer" + timerForGame.toString(), 14.7f, 14.8f);
         font.draw(batch2, "Items Used: " + userSprite.getItemUsedCounter(), 14.7f, 14.3f);
         font.draw(batch2, "Events Activated: " + userSprite.getEventActiveCounter(), 14.7f, 13.8f);
+
+        for (EventParentClass event : activeEvents) {
+            String displayText = event.getDisplayText();
+            if (displayText != null) {
+                font.draw(batch2, displayText, 7f, 13.8f);
+            }
+        }
 
         batch2.end();
 

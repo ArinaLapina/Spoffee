@@ -57,6 +57,8 @@ public abstract class ItemParentClass{
 }
 
 class EnergyDrink extends ItemParentClass{
+    private boolean speedRestored = false;
+    
     public EnergyDrink(String filePath, int geeseDisperalNum, EventOLD eventLinked){
         super(filePath, geeseDisperalNum, eventLinked);
     }
@@ -69,15 +71,16 @@ class EnergyDrink extends ItemParentClass{
 
         setTimer(new Timer(10000));
         markAsUsed(userSprite);
+        speedRestored = false;
         userSprite.setSpeed(1f);
     }
 
     @Override
     public void itemLogic(Player userSprite) {
-        if (this.getTimer().toString().equals("0:00")){
+        if (!speedRestored && this.getTimer().toString().equals("0:00")){
             userSprite.setSpeed(0.5f);
+            speedRestored = true;
         }
-        
     }
 }
 

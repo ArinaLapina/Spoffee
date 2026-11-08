@@ -19,13 +19,14 @@ public class Player {
     private int hiddenEventsActivated = 0;
     private Texture spriteImage;
     private Inventory playerInventory = new Inventory();
-    private Rectangle playerRectangle = new Rectangle(8f, 28f, 3.5f, 2f);
+    private Rectangle playerRectangle = new Rectangle(8f, 28f, 2f, 2f);
 
     public Player(int xPos, int yPos){
         spriteImage = new Texture("playerSprite.png");
         playerSprite = new Sprite(spriteImage);
         playerSprite.setSize(4f, 3f);
         playerSprite.setPosition(8f, 28f);
+        setRectangle();
     }
 
 
@@ -97,7 +98,11 @@ public class Player {
 
 
     public void setRectangle(){
-        playerRectangle.set(playerSprite.getX(), playerSprite.getY(), playerSprite.getWidth(), playerSprite.getHeight());
+        playerRectangle.set(
+                playerSprite.getX() + (playerSprite.getWidth() - playerRectangle.getWidth()) / 2f,
+                playerSprite.getY() + (playerSprite.getHeight() - playerRectangle.getHeight()) / 2f,
+                playerRectangle.getWidth(),
+                playerRectangle.getHeight());
     }
 
 

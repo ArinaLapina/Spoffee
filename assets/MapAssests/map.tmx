@@ -76,7 +76,7 @@
     <property name="eventID" type="int" value="2"/>
    </properties>
   </object>
-  <object id="24" x="605.348" y="1098.09" width="225.977" height="120.583" rotation="0.35331">
+  <object id="24" x="648.87" y="1098.36" width="137.554" height="120.583" rotation="0.35331">
    <properties>
     <property name="eventID" type="int" value="1"/>
    </properties>

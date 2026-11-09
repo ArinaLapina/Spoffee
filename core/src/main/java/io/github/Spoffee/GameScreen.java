@@ -115,19 +115,19 @@ public class GameScreen implements Screen {
             switch (eventID) {
                 case 0:
                     endGoalRectangle = worldRectangle;
+                    break;
 
                 case 1:
                     event = new Lecture(worldRectangle);
+                    activeEvents.add(event);
                     break;
+
                 case 2:
                     event = new LakeGeese(worldRectangle);
+                    activeEvents.add(event);
                     break;
-                
-                default:
-                    continue;
             }
             
-            activeEvents.add(event);
         }
 
         //Initialises the player and 5 minute timer
@@ -258,7 +258,7 @@ public class GameScreen implements Screen {
 
             for (Goose gooseSprite : activeGeese){
                 Vector2 goosePos = new Vector2(gooseSprite.getGoose().getX(), gooseSprite.getGoose().getY());
-                if (goosePos.dst2(playerPos.x, playerPos.y) < 5){
+                if (goosePos.dst2(playerPos.x, playerPos.y) < 1.5f){
                     activateWin = false;
                 }
 

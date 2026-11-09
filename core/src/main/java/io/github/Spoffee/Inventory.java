@@ -11,8 +11,8 @@ public class Inventory {
     
     public Inventory(){
         //Create objects of each item that could be used by a player
-        EnergyDrink item1 = new EnergyDrink("coffeeItem.png", 0, null);
-        Foghorn item2 = new Foghorn("foghornItem.png", 3, null);
+        EnergyDrink item1 = new EnergyDrink("coffeeItem.png", 0);
+        Foghorn item2 = new Foghorn("foghornItem.png", 3);
 
         allItems.add(item1);
         allItems.add(item2);

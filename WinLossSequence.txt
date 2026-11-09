@@ -2,7 +2,7 @@
 title Win/Loss condition
 actor User as Foo
 participant Player as Foo1
-participant Main as Foo2
+participant GameScreen as Foo2
 participant GooseContainer as Foo3
 participant Timer as Foo4
 

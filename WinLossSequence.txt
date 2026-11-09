@@ -16,35 +16,30 @@ Foo3 --> Foo2 : 4) Geese: A list of geese not dispersed
 Foo2 -> Foo4 : 5) getTime()
 Foo4 --> Foo2 : 6) Time remaining
 
-Foo2 -> Foo1 : 7) getEnergy()
-Foo1 --> Foo2 : 8) Energy remaining
+alt len(Geese) == 0 AND Time > 0
+    Foo2 --> Foo1 : 7) True
+    Foo1 --> Foo2 : 8) getScore()
+    Foo2 --> Foo1 : 9) Score
+    Foo1 --> Foo : 10) Player displayed getting on bus (win scene)
+    Foo1 --> Foo : 11) Score is Displayed
 
-alt len(Geese) == 0 AND Time > 0 AND Energy > 0
-    Foo2 --> Foo1 : 5) True
-    Foo1 --> Foo2 : 6) getScore()
-    Foo2 --> Foo1 : 7) Score
-    Foo1 --> Foo : 8) Player displayed getting on bus (win scene)
-    Foo1 --> Foo : 9) Score is Displayed
-
-else len(Geese) > 0 AND Time > 0 AND Energy > 0
-    Foo2 --> Foo1 : 5) False
-    Foo1 --> Foo : 6) Tell user they can't board the bus (game continues)
+else len(Geese) > 0 AND Time > 0
+    Foo2 --> Foo1 : 7) False
+    Foo1 --> Foo : 8) Tell user they can't board the bus (game continues)
 end
 
 
 == Lose Condition ==
 loop Each frame while game is active (while time != 0)
-    Foo2 --> Foo4 : 10) getTime()
-    Foo4 --> Foo2 : 11) Time remaining
-    Foo2 -> Foo1 : 16) getEnergy()
-    Foo1 --> Foo2 : 17) Energy remaining
+    Foo2 --> Foo4 : 12) getTime()
+    Foo4 --> Foo2 : 13) Time remaining
 
-alt Time <= 0 OR Energy <= 0
-        Foo2 --> Foo1 : 18) Player has lost
-        Foo1 -> Foo2 : 19) getScore()
-        Foo2 --> Foo1 : 20) Score
-        Foo1 --> Foo : 21) Display player lost scene
-        Foo1 --> Foo : 22) Display player's score
+alt Time <= 0
+        Foo2 --> Foo1 : 14) Player has lost
+        Foo1 -> Foo2 : 15) getScore()
+        Foo2 --> Foo1 : 16) Score
+        Foo1 --> Foo : 17) Display player lost scene
+        Foo1 --> Foo : 18) Display player's score
     end
 
 end 

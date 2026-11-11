@@ -40,8 +40,8 @@ public class LossScreen implements Screen{
 
     }
 
-    /** Renders the text and counters onto the screen, and has a trigger for a game restart
-     * @param delta
+    /** 
+     * Renders the text and counters onto the screen, and has a trigger for a game restart
      */
     @Override
     public void render(float delta) {
@@ -54,7 +54,7 @@ public class LossScreen implements Screen{
         font.draw(batch, "You lose the game :(", 3.3f, 4f);
         font.draw(batch, "Items Used: " + itemsUsed, 3.3f, 3.5f);
         font.draw(batch, "Events Activated: " + eventsActivated, 3.3f, 3f);
-        font.draw(batch, "Tap anywhere to restart the game: " , 3.3f, 2.5f);
+        font.draw(batch, "Click the screen to restart the game: " , 3.3f, 2.5f);
         batch.end();
 
 		if (Gdx.input.isTouched()) {

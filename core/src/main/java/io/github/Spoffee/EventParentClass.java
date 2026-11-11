@@ -3,6 +3,7 @@ package io.github.Spoffee;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 
 public abstract class EventParentClass{
     private boolean eventActivated = false;
@@ -46,7 +47,7 @@ public abstract class EventParentClass{
         return null;
     }
     
-    public abstract void activateEvent(Player userSprite, ArrayList<Goose> activeGeese);
+    public abstract void activateEvent(Player userSprite, ArrayList<Goose> activeGeese, GooseGame parent);
 
     public abstract void eventLogic(Player userSprite);
 
@@ -65,13 +66,11 @@ class Lecture extends EventParentClass{
      * @param activeGeese
      */
     @Override
-    public void activateEvent(Player userSprite, ArrayList<Goose> activeGeese){
+    public void activateEvent(Player userSprite, ArrayList<Goose> activeGeese, GooseGame parent){
         if (getEventActivationStatus()){
             return;
         }
-        if (this.getTimer() == null){
-            setTimer(new Timer(7500));
-        }
+        setTimer(new Timer(7500));
         markAsUsed(userSprite);
         speedRestored = false;
         userSprite.setSpeed(0f);
@@ -81,7 +80,7 @@ class Lecture extends EventParentClass{
      * Checks the value of the timer and if it's reached 0, sets the speed back to normal
      * Changes the variable speedRestored so other things affecting speed can be used after this event
      * @param userSprite
-=     */
+     */
     @Override
     public void eventLogic(Player userSprite) {
         if (!speedRestored && this.getTimer().toString().equals("0:00")){
@@ -116,7 +115,7 @@ class LakeGeese extends EventParentClass{
      * @param activeGeese
      */
     @Override
-    public void activateEvent(Player userSprite, ArrayList<Goose> activeGeese){
+    public void activateEvent(Player userSprite, ArrayList<Goose> activeGeese, GooseGame parent){
         if (getEventActivationStatus()){
             return;
         }
@@ -136,6 +135,37 @@ class LakeGeese extends EventParentClass{
     @Override
     public void eventLogic(Player userSprite) {
     }
+}
 
-    
+class EndGame extends EventParentClass{
+    public EndGame(Rectangle eventRectangle){
+        super(eventRectangle);
+    }
+
+    @Override
+    public void activateEvent(Player userSprite, ArrayList<Goose> activeGeese, GooseGame parent){
+        boolean activateWin = true;
+
+        if (userSprite.getPlayerRectangle().overlaps(getRectangle())){
+            Vector2 playerPos = new Vector2(userSprite.getPSprite().getX(), userSprite.getPSprite().getY());
+
+            for (Goose gooseSprite : activeGeese){
+                Vector2 goosePos = new Vector2(gooseSprite.getGoose().getX(), gooseSprite.getGoose().getY());
+                if (goosePos.dst2(playerPos.x, playerPos.y) < 1.5f){
+                    activateWin = false;
+                }
+            }
+
+            if (activateWin){
+                setEventActivationStatus(true);
+                parent.changeScreen(GooseGame.WINGAME, userSprite);
+            }
+        }
+        
+    }
+
+    @Override
+    public void eventLogic(Player userSprite) {
+    }
+
 }

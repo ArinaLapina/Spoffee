@@ -10,14 +10,11 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public class Goose {
-    private Sprite gooseSprite;
-    private Rectangle gooseRectangle;
-    private Texture gooseTexture;
-    private Vector2 goosePos;
-    private Vector2 playerPos;
-    private Vector2 direction;
+    private final Sprite gooseSprite;
+    private final Rectangle gooseRectangle;
+    private final Texture gooseTexture;
     private boolean active = true;
-    private float speed = 1.5f;
+    private final float speed = 1.5f;
     
 
     public Goose(String filePath, int xPos, int yPos, float width, float height){

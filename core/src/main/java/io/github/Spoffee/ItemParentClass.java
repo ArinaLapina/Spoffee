@@ -89,7 +89,7 @@ class Foghorn extends ItemParentClass{
         }
 
         markAsUsed(userSprite);
-        int geeseToDisperse = Math.min(getGeeseDispered(), activeGeese.size());
+        int geeseToDisperse = Math.min((getGeeseDispered()-1), activeGeese.size());
         int geeseRemoved = 0;
 
         while (geeseRemoved != geeseToDisperse){

@@ -11,7 +11,6 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 
-
 public class Player {
     private float speed = 0.5f;
     private Sprite playerSprite;
@@ -19,9 +18,9 @@ public class Player {
     private int hiddenEventsActivated = 0;
     private Texture spriteImage;
     private Inventory playerInventory = new Inventory();
-    private Rectangle playerRectangle = new Rectangle(8f, 28f, 2f, 2f);
+    private Rectangle playerRectangle = new Rectangle(8f, 28f, 1.75f, 2f);
 
-    public Player(int xPos, int yPos){
+    public Player(int xPos, int yPos) {
         spriteImage = new Texture("playerSprite.png");
         playerSprite = new Sprite(spriteImage);
         playerSprite.setSize(4f, 3f);
@@ -29,15 +28,15 @@ public class Player {
         setRectangle();
     }
 
-
-    public void drawPlayer(SpriteBatch batch){
+    public void drawPlayer(SpriteBatch batch) {
         playerSprite.draw(batch);
     }
 
-    /** 
-     * Checks for player input for movement based of arrow / wasd keys, and changes direction
+    /**
+     * Checks for player input for movement based of arrow / wasd keys, and changes
+     * direction
      */
-    public void playerInput(){
+    public void playerInput() {
         float delta = Gdx.graphics.getDeltaTime();
 
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
@@ -58,31 +57,33 @@ public class Player {
         }
     }
 
-    /** 
+    /**
      * Checks if the user in the out of bounds areas and if so stops them
      */
-    public void playerLogic(ArrayList<Rectangle> collisionAreas){
-        //Stops the player going into certain areas of the map (such as buildings or lakes)
+    public void playerLogic(ArrayList<Rectangle> collisionAreas) {
+        // Stops the player going into certain areas of the map (such as buildings or
+        // lakes)
         for (Rectangle solid : collisionAreas) {
-                Rectangle intersection = new Rectangle();
-                if (Intersector.intersectRectangles(playerRectangle, solid, intersection)) {
-                    if (intersection.getWidth() < intersection.getHeight()) {
-                        if (playerRectangle.getX() < solid.getX()) {
-                            playerSprite.setX(playerSprite.getX() - intersection.getWidth()); // Push left
-                        } else {
-                            playerSprite.setX(playerSprite.getX() + intersection.getWidth()); // Push right
-                        }
+            Rectangle intersection = new Rectangle();
+            if (Intersector.intersectRectangles(playerRectangle, solid, intersection)) {
+                if (intersection.getWidth() < intersection.getHeight()) {
+                    if (playerRectangle.getX() < solid.getX()) {
+                        playerSprite.setX(playerSprite.getX() - intersection.getWidth()); // Push left
                     } else {
-                        if (playerSprite.getY() < solid.getY()) {
-                            playerSprite.setY(playerSprite.getY() - intersection.getHeight()); // Push down
-                        } else {
-                            playerSprite.setY(playerSprite.getY() + intersection.getHeight()); // Push up
-                        }
+                        playerSprite.setX(playerSprite.getX() + intersection.getWidth()); // Push right
+                    }
+                } else {
+                    if (playerSprite.getY() < solid.getY()) {
+                        playerSprite.setY(playerSprite.getY() - intersection.getHeight()); // Push down
+                    } else {
+                        playerSprite.setY(playerSprite.getY() + intersection.getHeight()); // Push up
                     }
                 }
             }
+        }
 
-        //Stops the player from going outside of the map by only allowing a certain range of X, Y values
+        // Stops the player from going outside of the map by only allowing a certain
+        // range of X, Y values
         float worldWidth = 80f;
         float worldHeight = 50f;
 
@@ -91,13 +92,11 @@ public class Player {
         setRectangle();
     }
 
-    
-    public Rectangle getPlayerRectangle(){
+    public Rectangle getPlayerRectangle() {
         return playerRectangle;
     }
 
-
-    public void setRectangle(){
+    public void setRectangle() {
         playerRectangle.set(
                 playerSprite.getX() + (playerSprite.getWidth() - playerRectangle.getWidth()) / 2f,
                 playerSprite.getY() + (playerSprite.getHeight() - playerRectangle.getHeight()) / 2f,
@@ -105,43 +104,35 @@ public class Player {
                 playerRectangle.getHeight());
     }
 
-
-    public float getSpeed(){
+    public float getSpeed() {
         return speed;
     }
 
-
-    public void setSpeed(float newSpeed){
+    public void setSpeed(float newSpeed) {
         speed = newSpeed;
     }
 
-
-    public Sprite getPSprite(){
+    public Sprite getPSprite() {
         return playerSprite;
     }
 
-
-    public int getItemUsedCounter(){
+    public int getItemsUsedCounter() {
         return itemsUsed;
     }
 
-
-    public void increaseItemUsedCounter(){
+    public void increaseItemUsedCounter() {
         itemsUsed += 1;
     }
 
-
-    public int getEventActiveCounter(){
+    public int getEventActiveCounter() {
         return hiddenEventsActivated;
     }
 
-
-    public void increaseEventActiveCounter(){
+    public void increaseEventActiveCounter() {
         hiddenEventsActivated += 1;
     }
 
-
-    public Inventory getInventory(){
+    public Inventory getInventory() {
         return playerInventory;
     }
 }

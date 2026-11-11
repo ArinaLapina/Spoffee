@@ -20,7 +20,6 @@ public class MenuScreen implements Screen{
     }
 
     /** Initialises the screen window, and the background image ready to display
-     * @param delta
      */
     @Override 
     public void show(){
@@ -35,7 +34,6 @@ public class MenuScreen implements Screen{
     }
 
     /** Renders the image of the screen, and checks if the trigger for the game start has been activated
-     * @param delta
      */
     @Override
     public void render(float delta) {

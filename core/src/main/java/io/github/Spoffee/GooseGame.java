@@ -52,11 +52,11 @@ public class GooseGame extends Game {
      */
     public void changeScreen(int screen, Player player) {
         if (screen == WINGAME) {
-            winScreen = new WinScreen(this, player.getItemUsedCounter(),
+            winScreen = new WinScreen(this, player.getItemsUsedCounter(),
                     player.getEventActiveCounter());
             this.setScreen(winScreen);
         } else if (screen == LOSSGAME) {
-            lossScreen = new LossScreen(this, player.getItemUsedCounter(),
+            lossScreen = new LossScreen(this, player.getItemsUsedCounter(),
                     player.getEventActiveCounter());
             this.setScreen(lossScreen);
         } else {
